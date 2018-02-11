@@ -1,57 +1,55 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
+using Delve.Models.Expression;
+using Delve.Models.Validation;
+
 namespace Delve.Models
 {
-    public class FilterExpression
+    internal class FilterExpression : IValueExpression
     {
-        public string LeftOperand { get; }
+        public string PropertyExpression { get; protected set; }
+        public string Key { get; }
         public QueryOperator Operator { get; }
-        public string[] RightOperand { get; }
+        public string[] Values { get; }
 
         public string Query
         {
-            get { return $"{LeftOperand}{Operator.GetSymbol()}{RightOperand.Aggregate((x, y) => $"{x},{y}")}"; }
+            get { return $"{Key}{Operator.GetSymbol()}{Values.Aggregate((x, y) => $"{x},{y}")}"; }
         }
 
         public FilterExpression(string filter)
         {
             Operator = filter.GetQueryOperator();
             var (op1, op2) = filter.GetOperands();
-            LeftOperand = op1;
-            RightOperand = SplitOperand(op2);
+            Values = op2.Split('|').Select(property => property.Trim()).ToArray();
+            Key = op1;
         }
 
-        public string[] SplitOperand(string op)
+        public void ValidateExpression(IQueryValidator validator)
         {
-            return op.Split('|').Select(property => property.Trim()).ToArray();
+            PropertyExpression = ((IInternalQueryValidator)validator).ValidateValueExpression(this, ValidationType.Filter);
         }
 
-        public (string, string[]) GetDynamicLinqQuery(int startIdx = 0)
+        public (string query, string[] values) GetDynamicLinqQuery(int startIndex = 0)
         {
-            string query = string.Join(" or ", RightOperand
-                .Select((o, i) => Operator.ConstructSubQuery(LeftOperand, $"@{i + startIdx}")));
+            if (PropertyExpression == null)
+            {
+                throw new RuntimeException("PropertyExpression has not been validated.");
+            }
+
+            string query = string.Join(" or ", Values
+                .Select((o, i) => Operator.ConstructSubQuery(PropertyExpression, $"@{i + startIndex}")));
 
             query = $"({query})";
 
-            return (query, RightOperand);
+            return (query, Values);
         }
 
-        public static IEnumerable<FilterExpression> ParseExpression(string filters)
-        {
-            return filters == null ? Enumerable.Empty<FilterExpression>() : 
-                    filters.Split(',').Select(f => new FilterExpression(f.Trim()));
-        }
-
-        public static string GetQuery(IEnumerable<FilterExpression> filters)
-        {
-            return filters.Select(x => x.Query).Aggregate((x, y) => $"{x},{y}");
-        }
-
-        public static (string, object[]) GetDynamicLinqQuery(IList<FilterExpression> filters)
+        public static (string, object[]) GetDynamicLinqQuery(IList<IValueExpression> filters)
         {
             if (filters.Count == 0) { return (null, null); }
-            var values = filters.Select(f => f.GetDynamicLinqQuery().Item2)
+            var values = filters.Select(f => f.GetDynamicLinqQuery().query)
                 .SelectMany(x => x).Select(x => (object)x).ToArray();
 
             var subQueries = new List<string>();
@@ -59,8 +57,8 @@ namespace Delve.Models
             foreach (var filter in filters)
             {
                 var linqQuery = filter.GetDynamicLinqQuery(count);
-                subQueries.Add(linqQuery.Item1);
-                count += linqQuery.Item2.Length;
+                subQueries.Add(linqQuery.query);
+                count += linqQuery.values.Length;
             }
             string query = string.Join(" and ", subQueries);
 

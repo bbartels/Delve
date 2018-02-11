@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using Delve.Models.Expression;
+using Delve.Models.Validation;
+
 namespace Delve.Models
 {
-    public class OrderByExpression
+    internal class OrderByExpression : INonValueExpression
     {
-        public string Property { get; }
+        public string PropertyExpression { get; protected set; }
+        public string Key { get; }
         public bool Descending { get; }
 
         public string Query
         {
-            get { return $"{(Descending ? "-" : "+")}{Property}"; }
+            get { return $"{(Descending ? "-" : "+")}{Key}"; }
         }
 
         public OrderByExpression(string orderBy)
@@ -22,26 +26,20 @@ namespace Delve.Models
             }
             else { Descending = false; }
 
-            Property = orderBy;
+            Key = orderBy;
+        }
+
+        public void ValidateExpression(IQueryValidator validator)
+        {
+            PropertyExpression = ((IInternalQueryValidator)validator).ValidateExpression(this, ValidationType.OrderBy);
         }
 
         public string GetDynamicLinqQuery()
         {
-            return $"{Property} {(Descending ? "DESC" : "ASC")}";
+            return $"{PropertyExpression} {(Descending ? "DESC" : "ASC")}";
         }
 
-        public static IEnumerable<OrderByExpression> ParseExpression(string orderBy)
-        {
-            return orderBy == null ? Enumerable.Empty<OrderByExpression>() : 
-                orderBy.Split(',').Select(o => new OrderByExpression(o.Trim()));
-        }
-
-        public static string GetQuery(IEnumerable<OrderByExpression> orderBy)
-        {
-            return orderBy.Select(x => x.Property).Aggregate((x, y) => $"{x},{y}");
-        }
-
-        public static string GetDynamicLinqQuery(IList<OrderByExpression> orderBy)
+        public static string GetDynamicLinqQuery(IList<INonValueExpression> orderBy)
         {
             if (orderBy == null || orderBy.Count == 0) { return null; }
 

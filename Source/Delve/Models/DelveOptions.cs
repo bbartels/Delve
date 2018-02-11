@@ -1,4 +1,4 @@
-﻿namespace Delve.AspNetCore
+﻿namespace Delve.Models
 {
     public class DelveOptions
     {

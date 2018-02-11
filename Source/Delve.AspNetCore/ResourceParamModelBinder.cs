@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 using Delve.Models;
+using Delve.Models.Validation;
 
 namespace Delve.AspNetCore
 {
@@ -29,8 +30,8 @@ namespace Delve.AspNetCore
         {
             if (bindingContext.ModelType == typeof(IResourceParameter))
             {
-                throw new ArgumentException($"Must user concrete implementation: {typeof(ResourceParameter<>)} " +
-                                            $"of EntityTypeinstead of: {typeof(IResourceParameter)}.");
+                throw new ArgumentException($"Must use generic interface: {typeof(IResourceParameter<>)} " +
+                                            $"of EntityType instead of: {typeof(IResourceParameter)}.");
             }
 
             var param = (IResourceParameter)Activator.CreateInstance(bindingContext.ModelType);
@@ -40,9 +41,9 @@ namespace Delve.AspNetCore
             {
                 nameof(param.PageNumber).PascalToCamelCase(),
                 nameof(param.PageSize).PascalToCamelCase(),
-                nameof(param.Filter).PascalToCamelCase(),
-                nameof(param.OrderBy).PascalToCamelCase(),
-                nameof(param.Select).PascalToCamelCase()
+                "Filter",
+                "OrderBy",
+                "Select"
             };
 
             if (int.TryParse(coll[attributes[0]], out int num)) { param.PageNumber = num; }
@@ -56,7 +57,7 @@ namespace Delve.AspNetCore
 
                 if (bindingContext.HttpContext.RequestServices.GetService(validatorType) is IQueryValidator validator)
                 {
-                    validator.Validate(param);
+                    param.ValidateParameters(validator);
                 }
 
                 else

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve", "Source\Delve\Delve.csproj", "{72D86D9B-B697-4E2B-84C1-B785FDC7C252}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delve", "Source\Delve\Delve.csproj", "{72D86D9B-B697-4E2B-84C1-B785FDC7C252}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve.AspNetCore", "Source\Delve.AspNetCore\Delve.AspNetCore.csproj", "{6276F597-CC58-4C25-94B3-5A69C0C7B93E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delve.AspNetCore", "Source\Delve.AspNetCore\Delve.AspNetCore.csproj", "{6276F597-CC58-4C25-94B3-5A69C0C7B93E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

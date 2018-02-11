@@ -1,26 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using Delve.Models.Expression;
+using Delve.Models.Validation;
 
 namespace Delve.Models
 {
-    public class SelectExpression
+    public class SelectExpression : INonValueExpression
     {
-        public string Property { get; }
+        public string PropertyExpression { get; protected set; }
+        public string Key { get; }
+        public string Query { get { return Key; } }
 
         public SelectExpression(string select)
         {
-            Property = select;
-        }
-        
-        public static IEnumerable<SelectExpression> ParseExpression(string selects)
-        {
-            return selects == null ? Enumerable.Empty<SelectExpression>() : 
-                selects.Split(',').Select(s => new SelectExpression(s.Trim()));
+            Key = select;
         }
 
-        public static string GetSelectQuery(IEnumerable<SelectExpression> selects)
+        public void ValidateExpression(IQueryValidator validator)
         {
-            return selects.Select(s => s.Property).Aggregate((x, y) => $"{x},{y}");
+            PropertyExpression = ((IInternalQueryValidator)validator).ValidateExpression(this, ValidationType.Select);
+        }
+
+        public string GetDynamicLinqQuery()
+        {
+            throw new NotImplementedException();
         }
     }
 }

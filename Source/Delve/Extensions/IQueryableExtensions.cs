@@ -13,7 +13,7 @@ namespace Delve.Extensions
         public static async Task<IPagedResult<T>> ToPagedResultAsync<T>(this IQueryable<T> source, 
             Func<IQueryable<T>, Task<int>> CountAsync,
             Func<IQueryable<T>, Task<List<T>>> ToListAsync, 
-            IResourceParameter param)
+            IResourceParameter<T> param)
         {
             int count = await CountAsync(source);
             int pageNum = GetPageNum(count, param.PageSize, param.PageNumber);
@@ -22,7 +22,7 @@ namespace Delve.Extensions
             return new Models.PagedResult<T>(items, pageNum, param.PageSize, count);
         }
 
-        public static IPagedResult<T> ToPagedResult<T>(this IQueryable<T> source, IResourceParameter param)
+        public static IPagedResult<T> ToPagedResult<T>(this IQueryable<T> source, IResourceParameter<T> param)
         {
             int count = source.Count();
             int pageNum = GetPageNum(count, param.PageSize, param.PageNumber);
@@ -37,22 +37,21 @@ namespace Delve.Extensions
             return pageNum > totalPages ? totalPages : pageNum;
         }
 
-        public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> source, IResourceParameter parameters)
+        public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> source, IResourceParameter<T> param)
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var (query, values) = FilterExpression.GetDynamicLinqQuery(parameters.Filter);
+            var (query, values) = param.Filter;
             if (query == null || values == null) { return source; }
 
             return source.Where(query, values);
         }
 
-        public static IQueryable<T> ApplyOrderBy<T>(this IQueryable<T> source, IResourceParameter parameters)
+        public static IQueryable<T> ApplyOrderBy<T>(this IQueryable<T> source, IResourceParameter<T> param)
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var query = OrderByExpression.GetDynamicLinqQuery(parameters.OrderBy);
-
+            var query = param.OrderBy;
             return query == null ? source : source.OrderBy(query);
         }
     }

@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
+
+using Delve.Models.Expression;
+
+namespace Delve.Models.Validation
+{
+    public class AbstractQueryValidator<T> : IQueryValidator<T>, IInternalQueryValidator 
+    {
+        private readonly IDictionary<string, ValidationRules> _validationRules = 
+                new Dictionary<string, ValidationRules>(StringComparer.CurrentCultureIgnoreCase);
+
+        private void AddRule<TResult>(string key, IValidationRule rule)
+        {
+            if (!ValidatorHelpers.IsValidType(typeof(TResult)))
+            {
+                throw new InvalidValidationBuilderException($"Registered property ({key})" +
+                                                            $" cannot be of type {typeof(TResult)}.");
+            }
+
+            if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_]+$"))
+            {
+                throw new InvalidValidationBuilderException("Key must only contain numbers, letters and underscores.");
+            }
+
+            if (!_validationRules.ContainsKey(key))
+            {
+                _validationRules.Add(key, new ValidationRules(rule)); 
+            }
+
+            else
+            {
+                _validationRules[key].AddRule(rule);
+            }
+        }
+
+        protected void CanFilter<TResult>(string key, Expression<Func<T, TResult>> exp)
+        {
+            AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Filter));
+        }
+
+        protected void CanSelect<TResult>(string key, Expression<Func<T, TResult>> exp)
+        {
+            AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Select));
+        }
+
+        protected void CanOrder<TResult>(string key, Expression<Func<T, TResult>> exp)
+        {
+            AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.OrderBy));
+        }
+
+        private void ValidateKey(string key, ValidationType type)
+        {
+            if (!_validationRules.ContainsKey(key))
+            {
+                throw new InvalidQueryException($"Invalid {type} " +
+                                            $"propertykey: {key} in query.");
+            }
+        }
+
+        string IInternalQueryValidator.ValidateExpression(INonValueExpression expression, ValidationType type)
+        {
+             ValidateKey(expression.Key, type);
+            return _validationRules[expression.Key].ValidateExpression(type, expression);
+        }
+
+        string IInternalQueryValidator.ValidateValueExpression(IValueExpression expression, ValidationType type)
+        {
+            ValidateKey(expression.Key, type);
+            return _validationRules[expression.Key].ValidateValueExpression(type, expression);
+        }
+    }
+
+    internal static class ValidatorHelpers
+    {
+        private static readonly Type[] _validNonPrimitive =
+        {
+            typeof(string), typeof(DateTime)
+        };
+
+        public static bool IsValidType(Type type)
+        {
+            return type.IsPrimitive || _validNonPrimitive.Contains(type);
+        }
+
+        public static string GetPropertyName<T, TResult>(Expression<Func<T, TResult>> expression)
+        {
+            if (expression.Body is MemberExpression member)
+            {
+                return member.Member.Name;
+            }
+            throw new ArgumentException($"Lambda expression: {expression.Body} does not refer to a property.");
+        }
+    }
+}

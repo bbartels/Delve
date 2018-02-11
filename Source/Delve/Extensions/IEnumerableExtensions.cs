@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
 using Delve.Models;
 
 namespace Delve.Extensions
@@ -15,16 +16,17 @@ namespace Delve.Extensions
             if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
 
             var propertyInfo = new List<PropertyInfo>();
-            if(param.Select.Count == 0)
+            //TODO: Rewrite
+            if(param.Select == "")
             {
                 propertyInfo.AddRange(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
             }
 
             else
             {
-                propertyInfo.AddRange(param.Select.Select(field => 
-                    typeof(T).GetProperty(field.Property, 
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)));
+                //propertyInfo.AddRange(param.Select.Select(field => 
+                  //  typeof(T).GetProperty(field.PropertyExpression, 
+                    //    BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)));
             }
 
             var objects = new List<ExpandoObject>();
