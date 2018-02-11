@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve", "Delve\Delve.csproj", "{72D86D9B-B697-4E2B-84C1-B785FDC7C252}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve.AspNetCore", "Delve.AspNetCore\Delve.AspNetCore.csproj", "{6276F597-CC58-4C25-94B3-5A69C0C7B93E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72D86D9B-B697-4E2B-84C1-B785FDC7C252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D86D9B-B697-4E2B-84C1-B785FDC7C252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D86D9B-B697-4E2B-84C1-B785FDC7C252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D86D9B-B697-4E2B-84C1-B785FDC7C252}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6276F597-CC58-4C25-94B3-5A69C0C7B93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6276F597-CC58-4C25-94B3-5A69C0C7B93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6276F597-CC58-4C25-94B3-5A69C0C7B93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6276F597-CC58-4C25-94B3-5A69C0C7B93E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {70099D84-3797-4CEE-9F71-19979201B240}
+	EndGlobalSection
+EndGlobal
