@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 using Delve.Models;
 
@@ -16,17 +15,19 @@ namespace Delve.Extensions
             if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
 
             var propertyInfo = new List<PropertyInfo>();
-            //TODO: Rewrite
-            if(param.Select == "")
+
+            var internalParam = (IInternalResourceParameter)param;
+
+            if (internalParam.Select.Count == 0)
             {
                 propertyInfo.AddRange(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
             }
 
             else
             {
-                //propertyInfo.AddRange(param.Select.Select(field => 
-                  //  typeof(T).GetProperty(field.PropertyExpression, 
-                    //    BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)));
+                propertyInfo.AddRange(internalParam.Select.Select(field => 
+                    typeof(T).GetProperty(field.PropertyExpression, 
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)));
             }
 
             var objects = new List<ExpandoObject>();
