@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq.Dynamic.Core;
 using System.Linq;
 using System.Reflection;
 
@@ -10,25 +11,17 @@ namespace Delve.Extensions
 {
     public static class IEnumerableExtensions
     {
-        public static IEnumerable<ExpandoObject> ShapeData<T>(this IEnumerable<T> source, IResourceParameter param)
+        public static IEnumerable<dynamic> ShapeData<T>(this IEnumerable<T> source, IResourceParameter param)
         {
             if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
 
-            var propertyInfo = new List<PropertyInfo>();
-
             var internalParam = (IInternalResourceParameter)param;
-
-            if (internalParam.Select.Count == 0)
+            if (internalParam.Select.Count != 0)
             {
-                propertyInfo.AddRange(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
+                return source.AsQueryable().Select(SelectExpression.GetDynamicLinqQuery(internalParam.Select)).ToDynamicArray();
             }
 
-            else
-            {
-                propertyInfo.AddRange(internalParam.Select.Select(field => 
-                    typeof(T).GetProperty(field.PropertyExpression, 
-                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)));
-            }
+            var propertyInfo = new List<PropertyInfo>(typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance));
 
             var objects = new List<ExpandoObject>();
 

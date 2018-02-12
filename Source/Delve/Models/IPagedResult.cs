@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
 
 namespace Delve.Models
 {
@@ -14,6 +13,6 @@ namespace Delve.Models
         bool HasPrevious { get; }
         bool HasNext { get; }
 
-        IEnumerable<ExpandoObject> Shape(IResourceParameter param);
+        IEnumerable<dynamic> Shape(IResourceParameter param);
     }
 }

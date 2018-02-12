@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Delve.Models
 {
-    public enum QueryOperator
+    internal enum QueryOperator
     {
         Equal,
         NotEqual,

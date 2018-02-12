@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
 
 using Delve.Extensions;
 
@@ -32,7 +31,7 @@ namespace Delve.Models
             TotalPages = (count + pageSize - 1) / pageSize;
         }
 
-        public IEnumerable<ExpandoObject> Shape(IResourceParameter param)
+        public IEnumerable<dynamic> Shape(IResourceParameter param)
         {
             return this.ShapeData(param);
         }
