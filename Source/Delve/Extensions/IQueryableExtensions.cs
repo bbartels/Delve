@@ -54,5 +54,15 @@ namespace Delve.Extensions
             var query = OrderByExpression.GetDynamicLinqQuery(((IInternalResourceParameter)param).OrderBy);
             return query == null ? source : source.OrderBy(query);
         }
+
+        public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include, IResourceParameter<T> param)
+        {
+            if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
+            if (Include == null) { return source; }
+
+            var expands = ((IInternalResourceParameter)param).Expand;
+
+            return expands.Aggregate(source, (current, expand) => Include(current, expand.GetDynamicLinqQuery()));
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,10 +16,17 @@ namespace Delve.Models.Validation
 
         private void AddRule<TResult>(string key, IValidationRule rule)
         {
-            if (!ValidatorHelpers.IsValidType(typeof(TResult)))
+            if (rule.ValidationType != ValidationType.Expand && !ValidatorHelpers.IsValidType(typeof(TResult)))
             {
                 throw new InvalidValidationBuilderException($"Registered property ({key})" +
                                                             $" cannot be of type {typeof(TResult)}.");
+            }
+
+            if (rule.ValidationType == ValidationType.Expand && !ValidatorHelpers.IsValidExpandType(typeof(TResult)))
+            {
+                throw new InvalidValidationBuilderException($"Registered property ({key})" +
+                                                            $" cannot be of type {typeof(TResult)}." +
+                                                            $"Expand is limited to Enumerable Types.");
             }
 
             if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_]+$"))
@@ -50,6 +58,11 @@ namespace Delve.Models.Validation
         protected void CanOrder<TResult>(string key, Expression<Func<T, TResult>> exp)
         {
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.OrderBy));
+        }
+
+        protected void CanExpand<TResult>(string key, Expression<Func<T, TResult>> exp) where TResult : class, IEnumerable
+        {
+            AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Expand));
         }
 
         private void ValidateKey(string key, ValidationType type)
@@ -86,7 +99,12 @@ namespace Delve.Models.Validation
             return type.IsPrimitive || _validNonPrimitive.Contains(type);
         }
 
-        public static string GetPropertyName<T, TResult>(Expression<Func<T, TResult>> expression)
+        public static bool IsValidExpandType(Type type)
+        {
+            return typeof(IEnumerable).IsAssignableFrom(type);
+        }
+
+        public static string CheckExpressionIsProperty<T, TResult>(Expression<Func<T, TResult>> expression)
         {
             if (expression.Body is MemberExpression member)
             {

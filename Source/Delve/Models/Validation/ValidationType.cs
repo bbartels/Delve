@@ -4,6 +4,7 @@
     {
         Select,
         OrderBy,
-        Filter
+        Filter,
+        Expand
     }
 }

@@ -43,7 +43,8 @@ namespace Delve.AspNetCore
                 nameof(param.PageSize).PascalToCamelCase(),
                 "Filter",
                 "OrderBy",
-                "Select"
+                "Select",
+                "Expand"
             };
 
             if (int.TryParse(coll[attributes[0]], out int num)) { param.PageNumber = num; }
@@ -51,7 +52,7 @@ namespace Delve.AspNetCore
 
             try
             {
-                param.ApplyParameters(coll[attributes[2]], coll[attributes[3]], coll[attributes[4]]);
+                param.ApplyParameters(coll[attributes[2]], coll[attributes[3]], coll[attributes[4]], coll[attributes[5]]);
                 var elementType = bindingContext.ModelType.GetGenericArguments().FirstOrDefault();
                 var validatorType = typeof(IQueryValidator<>).MakeGenericType(elementType);
 

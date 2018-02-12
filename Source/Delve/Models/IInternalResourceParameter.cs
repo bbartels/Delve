@@ -8,5 +8,6 @@ namespace Delve.Models
         IList<IValueExpression> Filter { get; }
         IList<INonValueExpression> OrderBy { get; }
         IList<INonValueExpression> Select { get; }
+        IList<INonValueExpression> Expand { get; }
     }
 }

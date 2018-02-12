@@ -35,16 +35,19 @@ namespace Delve.Models
         IList<IValueExpression> IInternalResourceParameter.Filter { get { return Filter; } }
         IList<INonValueExpression> IInternalResourceParameter.OrderBy { get { return OrderBy; } }
         IList<INonValueExpression> IInternalResourceParameter.Select { get { return Select; } }
+        IList<INonValueExpression> IInternalResourceParameter.Expand { get { return Expand; } }
 
         internal IList<IValueExpression> Filter { get; private set; }
         internal IList<INonValueExpression> OrderBy { get; private set; }
         internal IList<INonValueExpression> Select { get; private set; }
+        internal IList<INonValueExpression> Expand { get; private set; }
 
-        public void ApplyParameters(string filter, string orderBy, string select)
+        public void ApplyParameters(string filter, string orderBy, string select, string expand)
         {
             Filter = filter.ParseQuery<IValueExpression>(x => new FilterExpression(x));
             OrderBy = orderBy.ParseQuery<INonValueExpression>(x => new OrderByExpression(x));
             Select = select.ParseQuery<INonValueExpression>(x => new SelectExpression(x));
+            Expand = expand.ParseQuery<INonValueExpression>(x => new ExpandExpression(x));
         }
 
         public Dictionary<string, string> GetPageHeader()
@@ -53,13 +56,14 @@ namespace Delve.Models
             if (Filter.Any())   { dict.Add("filter", Filter.GetQuery()); }
             if (OrderBy.Any())  { dict.Add("orderBy", OrderBy.GetQuery()); }
             if (Select.Any())   { dict.Add("select", Select.GetQuery()); }
+            if (Expand.Any())   { dict.Add("expand", Expand.GetQuery());}
 
             return dict;
         }
 
         public void ValidateParameters(IQueryValidator validator)
         {
-            foreach (var expression in OrderBy.Concat(Select))
+            foreach (var expression in OrderBy.Concat(Select).Concat(Expand))
             {
                 expression.ValidateExpression(validator);
             }

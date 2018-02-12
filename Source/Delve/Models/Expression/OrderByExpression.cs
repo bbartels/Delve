@@ -8,7 +8,7 @@ namespace Delve.Models
 {
     internal class OrderByExpression : INonValueExpression
     {
-        public string PropertyExpression { get; protected set; }
+        public string PropertyExpression { get; private set; }
         public string Key { get; }
         public bool Descending { get; }
 

@@ -9,7 +9,7 @@ namespace Delve.Models
 {
     internal class SelectExpression : INonValueExpression
     {
-        public string PropertyExpression { get; protected set; }
+        public string PropertyExpression { get; private set; }
         public string Key { get; }
         public string Query { get { return Key; } }
 

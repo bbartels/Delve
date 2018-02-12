@@ -20,12 +20,17 @@ namespace Delve.Models.Validation
         public ValidationRule(Expression<Func<T, TResult>> exp, ValidationType type)
         {
             Expression = exp;
+            if (type == ValidationType.Expand)
+            {
+                ValidatorHelpers.CheckExpressionIsProperty(exp);
+            }
             ValidationType = type;
         }
 
         public string ValidateExpression(INonValueExpression expression)
         {
-            return ExpressionString;
+            return ValidationType.Expand == ValidationType ? 
+                ValidatorHelpers.CheckExpressionIsProperty(Expression) : ExpressionString;
         }
 
         public string ValidateValueExpression(IValueExpression expression)
