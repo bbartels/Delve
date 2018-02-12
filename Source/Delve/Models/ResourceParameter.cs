@@ -6,7 +6,7 @@ using Delve.Models.Validation;
 
 namespace Delve.Models
 {
-    public class ResourceParameter<T> : IResourceParameter<T>, IInternalResourceParameter
+    internal class ResourceParameter<T> : IResourceParameter<T>, IInternalResourceParameter
     {
         private int _pageNumber = 1;
         public int PageNumber

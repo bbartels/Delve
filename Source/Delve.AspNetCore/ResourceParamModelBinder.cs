@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -34,7 +33,15 @@ namespace Delve.AspNetCore
                                             $"of EntityType instead of: {typeof(IResourceParameter)}.");
             }
 
-            var param = (IResourceParameter)Activator.CreateInstance(bindingContext.ModelType);
+            var elementTypes = bindingContext.ModelType.GetGenericArguments();
+
+            if (elementTypes.Length != 1)
+            {
+                throw new ArgumentException($"{nameof(IResourceParameter)} must have exactly one type argement.");
+            }
+
+            var parameterType = typeof(ResourceParameter<>).MakeGenericType(elementTypes[0]);
+            var param = (IResourceParameter)Activator.CreateInstance(parameterType);
 
             var coll = HttpUtility.ParseQueryString(bindingContext.HttpContext.Request.QueryString.Value);
             var attributes = new[]
@@ -53,8 +60,7 @@ namespace Delve.AspNetCore
             try
             {
                 param.ApplyParameters(coll[attributes[2]], coll[attributes[3]], coll[attributes[4]], coll[attributes[5]]);
-                var elementType = bindingContext.ModelType.GetGenericArguments().FirstOrDefault();
-                var validatorType = typeof(IQueryValidator<>).MakeGenericType(elementType);
+                var validatorType = typeof(IQueryValidator<>).MakeGenericType(elementTypes[0]);
 
                 if (bindingContext.HttpContext.RequestServices.GetService(validatorType) is IQueryValidator validator)
                 {
@@ -63,8 +69,7 @@ namespace Delve.AspNetCore
 
                 else
                 {
-                    bindingContext.Result = ModelBindingResult.Failed();
-                    return Task.CompletedTask;
+                    throw new RuntimeException($"No service registered for QueryValidator: {validatorType}.");
                 }
             }
             catch (InvalidQueryException e)
