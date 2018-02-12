@@ -49,7 +49,7 @@ namespace Delve.Models
         public static (string, object[]) GetDynamicLinqQuery(IList<IValueExpression> filters)
         {
             if (filters.Count == 0) { return (null, null); }
-            var values = filters.Select(f => f.GetDynamicLinqQuery().query)
+            var values = filters.Select(f => f.GetDynamicLinqQuery().values)
                 .SelectMany(x => x).Select(x => (object)x).ToArray();
 
             var subQueries = new List<string>();

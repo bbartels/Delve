@@ -6,7 +6,7 @@ using Delve.Models.Validation;
 
 namespace Delve.Models
 {
-    internal class ResourceParameter<T> : IResourceParameter<T>
+    public class ResourceParameter<T> : IResourceParameter<T>
     {
         private int _pageNumber = 1;
         public int PageNumber
@@ -32,9 +32,9 @@ namespace Delve.Models
             }
         }
 
-        public IList<IValueExpression> Filter { get; internal set; }
-        public IList<INonValueExpression> OrderBy { get; internal set; }
-        public IList<INonValueExpression> Select { get; internal set; }
+        internal IList<IValueExpression> Filter { get; set; }
+        internal IList<INonValueExpression> OrderBy { get; set; }
+        internal IList<INonValueExpression> Select { get; set; }
 
         (string query, object[] values) IResourceParameter.Filter
         {
@@ -43,10 +43,7 @@ namespace Delve.Models
 
         string IResourceParameter.OrderBy
         {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
+            get { return OrderByExpression.GetDynamicLinqQuery(OrderBy); }
         }
 
         string IResourceParameter.Select

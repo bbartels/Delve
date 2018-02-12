@@ -10,25 +10,28 @@ namespace Delve.Models.Validation
     internal class ValidationRule<T, TResult> : IValidationRule
     {
         public ValidationType ValidationType { get; }
-       
-
         public Expression<Func<T, TResult>> Expression { get; private set; }
+
+        public string ExpressionString
+        {
+            get { return Expression.ToString(); }
+        }
 
         public ValidationRule(Expression<Func<T, TResult>> exp, ValidationType type)
         {
             Expression = exp;
-            ValidationType = ValidationType;
+            ValidationType = type;
         }
 
         public string ValidateExpression(INonValueExpression expression)
         {
-            return Expression.ToString();
+            return ExpressionString;
         }
 
         public string ValidateValueExpression(IValueExpression expression)
         {
             ValidatePropertyType(expression.Key, expression.Values);
-            return Expression.ToString();
+            return ExpressionString;
         }
 
         private void ValidatePropertyType(string key, IEnumerable<string> values)
