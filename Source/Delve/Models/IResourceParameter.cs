@@ -9,11 +9,6 @@ namespace Delve.Models
         int PageNumber { get; set; }
         int PageSize { get; set; }
 
-        (string query, object[] values) Filter { get; }
-        string OrderBy { get; }
-        string Select { get; }
-
-
         void ApplyParameters(string filter, string orderBy, string select);
 
         Dictionary<string, string> GetPageHeader();

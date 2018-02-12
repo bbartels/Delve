@@ -41,7 +41,7 @@ namespace Delve.Extensions
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var (query, values) = param.Filter;
+            var (query, values) = FilterExpression.GetDynamicLinqQuery(((IInternalResourceParameter)param).Filter);
             if (query == null || values == null) { return source; }
 
             return source.Where(query, values);
@@ -51,7 +51,7 @@ namespace Delve.Extensions
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var query = param.OrderBy;
+            var query = OrderByExpression.GetDynamicLinqQuery(((IInternalResourceParameter)param).OrderBy);
             return query == null ? source : source.OrderBy(query);
         }
     }

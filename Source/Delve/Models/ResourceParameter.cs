@@ -40,24 +40,6 @@ namespace Delve.Models
         internal IList<INonValueExpression> OrderBy { get; private set; }
         internal IList<INonValueExpression> Select { get; private set; }
 
-        (string query, object[] values) IResourceParameter.Filter
-        {
-            get { return FilterExpression.GetDynamicLinqQuery(Filter); }
-        }
-
-        string IResourceParameter.OrderBy
-        {
-            get { return OrderByExpression.GetDynamicLinqQuery(OrderBy); }
-        }
-
-        string IResourceParameter.Select
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
         public void ApplyParameters(string filter, string orderBy, string select)
         {
             Filter = filter.ParseQuery<IValueExpression>(x => new FilterExpression(x));
