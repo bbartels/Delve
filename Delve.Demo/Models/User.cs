@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Delve.Models;
+
 namespace Delve.Demo.Models
 {
     public class User
@@ -13,5 +15,9 @@ namespace Delve.Demo.Models
         public DateTime DateOfBirth { get; set; }
 
         public IEnumerable<UserRole> UserRoles { get; set; }
+    }
+
+    public class UserQueryValidator : Delve.Models.Validation.AbstractQueryValidator<User>
+    {
     }
 }

@@ -8,7 +8,7 @@ using Delve.Demo.Models;
 
 namespace Delve.Demo.Persistence
 {
-        public class UserRepository : Repository<User>, IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
         public UserManagerContext UserManagerContext { get { return Context as UserManagerContext; } }
         public UserRepository(DbContext context) : base(context) { }
