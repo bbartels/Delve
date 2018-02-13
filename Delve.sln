@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delve", "Source\Delve\Delve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delve.AspNetCore", "Source\Delve.AspNetCore\Delve.AspNetCore.csproj", "{6276F597-CC58-4C25-94B3-5A69C0C7B93E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve.Demo", "Delve.Demo\Delve.Demo.csproj", "{3E74CEE9-F8F0-4CF2-BDA4-98577C332AC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delve.Demo", "Demo\Delve.Demo\Delve.Demo.csproj", "{3E74CEE9-F8F0-4CF2-BDA4-98577C332AC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

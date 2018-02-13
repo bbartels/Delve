@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Source\Delve.AspNetCore\Delve.AspNetCore.csproj" />
-    <ProjectReference Include="..\Source\Delve\Delve.csproj" />
+    <ProjectReference Include="..\..\Source\Delve.AspNetCore\Delve.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Source\Delve\Delve.csproj" />
   </ItemGroup>
 
 </Project>
