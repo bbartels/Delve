@@ -55,7 +55,7 @@ namespace Delve.Demo.Persistence
 
         public async Task<IPagedResult<T>> GetAsync(IResourceParameter<T> parameters)
         {
-            var collection = Context.Set<T>().ApplyFilters(parameters);
+            var collection = Context.Set<T>().ApplyIncludes((q, i) => q.Include(i), parameters).ApplyFilters(parameters).ApplyOrderBy(parameters);
             return await collection.ToPagedResultAsync(async q => await q.CountAsync(), async q => await q.ToListAsync(), parameters);
         }
 
@@ -108,7 +108,6 @@ namespace Delve.Demo.Persistence
         {
             Context.Set<T>().RemoveRange(entities);
         }
-
 
         protected virtual IQueryable<T> BuildQueryable(
             Expression<Func<T, bool>> predicate = null,

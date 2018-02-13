@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Delve.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Delve.AspNetCore
 {
     public static class ResourceHelper
     {
-        public static void AddPagedResponesHeader<T>(this Controller controller,
+        public static void AddPaginationHeader<T>(this Controller controller,
             IResourceParameter parameters, IPagedResult<T> result, IUrlHelper urlHelper)
         {
             var actionName = controller.ControllerContext.ActionDescriptor.AttributeRouteInfo.Name;

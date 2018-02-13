@@ -91,7 +91,7 @@ namespace Delve.Models.Validation
     {
         private static readonly Type[] _validNonPrimitive =
         {
-            typeof(string), typeof(DateTime)
+            typeof(string), typeof(DateTime), typeof(TimeSpan)
         };
 
         public static bool IsValidType(Type type)

@@ -13,7 +13,7 @@ namespace Delve.Demo.Persistence
 
         public IUserRepository Users => _users ?? (_users = new UserRepository(_context));
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(UserManagerContext context)
         {
             _context = context;
         }

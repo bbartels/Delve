@@ -17,8 +17,8 @@ namespace Delve.Extensions
         {
             int count = await CountAsync(source);
             int pageNum = GetPageNum(count, param.PageSize, param.PageNumber);
-
-            var items = await ToListAsync(source.Skip((pageNum - 1) * param.PageSize).Take(param.PageSize));
+            var test = source.Skip((pageNum - 1) * param.PageSize).Take(param.PageSize);
+            var items = await ToListAsync(test);
             return new Models.PagedResult<T>(items, pageNum, param.PageSize, count);
         }
 

@@ -13,5 +13,14 @@ namespace Delve.Demo.Models
 
         public Role Role { get; set; }
         public User User { get; set; }
+
+        public UserRole() { }
+
+        public UserRole(int userId, int roleId)
+        {
+            UserId = userId;
+            RoleId = roleId;
+        }
+
     }
 }
