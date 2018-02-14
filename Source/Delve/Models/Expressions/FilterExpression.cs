@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-using Delve.Models.Expressions;
 using Delve.Models.Validation;
 
-namespace Delve.Models
+namespace Delve.Models.Expressions
 {
     internal class FilterExpression <T, TResult> : BaseExpression<T, TResult>
     {
@@ -20,7 +19,7 @@ namespace Delve.Models
             }
         }
 
-        public Expression<Func<TResult, TResult, bool>> OperationExpression { get; private set; }
+        public Func<TResult, TResult, bool> OperationExpression { get; private set; }
         public TResult[] Values { get; }
 
 
@@ -37,10 +36,9 @@ namespace Delve.Models
 
         public override IQueryable<T> ApplyFilter(IQueryable<T> source)
         {
-            var compiledExp = OperationExpression.Compile();
             var compiledProp = Property.Compile();
 
-            return source.Where(x => Values.Any(v => compiledExp(v, compiledProp(x))));
+            return source.Where(x => Values.Any(v =>  OperationExpression(v, compiledProp(x))));
         }
     }
 }

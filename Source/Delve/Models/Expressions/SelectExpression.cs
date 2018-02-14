@@ -1,13 +1,6 @@
-﻿
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System;
 
-using Delve.Models.Expressions;
-
-namespace Delve.Models
+namespace Delve.Models.Expressions
 {
     internal class SelectExpression<T, TResult> : BaseExpression<T, TResult>
     {
@@ -20,7 +13,16 @@ namespace Delve.Models
 
         public override Func<T, (string, object)> GetPropertyMapping()
         {
-            return (t) => (Key, Property.Compile()(t));
+            try
+            {
+                return (t) => (Key, Property.Compile()(t));
+            }
+
+            catch (ArgumentNullException)
+            {
+                throw new InvalidQueryException($"Could not select requested property: {Key}." +
+                                                "Likely cause by missing Expand.");
+            }
         }
     }
 }

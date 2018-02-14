@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using Delve.Extensions;
-
 namespace Delve.Models
 {
     public class PagedResult<T> : List<T>, IPagedResult<T>

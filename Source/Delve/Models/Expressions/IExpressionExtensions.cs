@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-using Delve.Models.Expression;
 using Delve.Models.Validation;
 
 namespace Delve.Models.Expressions

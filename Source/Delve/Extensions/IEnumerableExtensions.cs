@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using Delve.Models;
 
-namespace Delve.Extensions
+namespace Delve.Models
 {
     public static class IEnumerableExtensions
     {

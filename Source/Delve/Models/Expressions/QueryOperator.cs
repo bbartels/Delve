@@ -1,19 +1,19 @@
-﻿namespace Delve.Models
+﻿namespace Delve.Models.Expressions
 {
     internal enum QueryOperator
     {
         Equal,
+        EqualInsensitive,
         NotEqual,
         GreaterThan,
         LessThan,
         GreaterThanOrEqual,
         LessThanOrEqual,
         Contains,
+        ContainsInsensitive,
         StartsWith,
-        EndsWith,
-        EqualInsensitive,
         StartsWithInsensitive,
-        EndsWithInsensitive,
-        ContainsInsensitive
+        EndsWith,
+        EndsWithInsensitive
     }
 }

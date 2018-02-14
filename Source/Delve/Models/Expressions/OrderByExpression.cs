@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 
-using Delve.Models.Expressions;
 using Delve.Models.Validation;
 
-namespace Delve.Models
+namespace Delve.Models.Expressions
 {
     internal class OrderByExpression<T, TResult> : BaseExpression<T, TResult>
     {

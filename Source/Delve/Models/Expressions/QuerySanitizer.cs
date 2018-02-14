@@ -2,25 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Delve.Models.Validation
+using Delve.Models.Validation;
+
+namespace Delve.Models.Expressions
 {
     internal static class QuerySanitizer
     {
         private static readonly Dictionary<string, QueryOperator> _operatorMaps = new Dictionary<string, QueryOperator>
         {
             { "==", QueryOperator.Equal },
+            { "==*", QueryOperator.EqualInsensitive },
             { "!=", QueryOperator.NotEqual },
             { ">", QueryOperator.GreaterThan },
             { "<", QueryOperator.LessThan},
             { ">=", QueryOperator.GreaterThanOrEqual },
             { "<=", QueryOperator.LessThanOrEqual },
             { "?", QueryOperator.Contains },
+            { "?*", QueryOperator.ContainsInsensitive },
             { "^", QueryOperator.StartsWith },
+            { "^*", QueryOperator.StartsWithInsensitive },
             { "$", QueryOperator.EndsWith },
-            { "*==", QueryOperator.EqualInsensitive },
-            { "*?", QueryOperator.ContainsInsensitive },
-            { "*^", QueryOperator.StartsWithInsensitive },
-            { "*$", QueryOperator.EndsWithInsensitive }
+            { "$*", QueryOperator.EndsWithInsensitive }
         };
 
         public static string GetKey(ValidationType type, string query)
@@ -64,9 +66,12 @@ namespace Delve.Models.Validation
 
         public static QueryOperator GetFilterOperator(string query)
         {
-            foreach (var op in _operatorMaps)
+            foreach (var op in _operatorMaps.Reverse())
             {
-                if (query.Contains(op.Key)) { return op.Value; }
+                if (query.Contains(op.Key))
+                {
+                    return op.Value;
+                }
             }
             throw new InvalidQueryException($"{query} does not contain a valid {nameof(QueryOperator)}.");
         }
