@@ -1,11 +1,13 @@
-﻿using Delve.Models.Expression;
+﻿using System;
+
+using Delve.Models.Expression;
 
 namespace Delve.Models.Validation
 {
-    internal interface IInternalQueryValidator
+    internal interface IInternalQueryValidator<T> : IQueryValidator
     {
-        string ValidateExpression(INonValueExpression expression, ValidationType type);
-        string ValidateValueExpression(IValueExpression expression, ValidationType type);
+        IValidationRule ValidateExpression(IExpression expression, ValidationType type);
+        Type GetResultType(string key, ValidationType type);
     }
 
     public interface IQueryValidator 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Delve.Models.Expression;
@@ -26,24 +27,24 @@ namespace Delve.Models.Validation
             _rules.Add(rule);
         }
 
+        public IValidationRule ValidateExpression(ValidationType type, IExpression exp)
+        {
+            CheckForValidationType(type, exp.Key);
+            return _rules.SingleOrDefault(x => x.ValidationType == type).ValidateExpression(exp);
+        }
+
+        public Type GetResultType(ValidationType type, string key)
+        {
+            CheckForValidationType(type, key);
+            return _rules.SingleOrDefault(x => x.ValidationType == type).ResultType;
+        }
+
         private void CheckForValidationType(ValidationType type, string key)
         {
             if (!_rules.Select(x => x.ValidationType).Contains(type))
             {
                 throw new InvalidQueryException($"{type} has not been registered under key: {key}");
             }
-        }
-
-        public string ValidateExpression(ValidationType type, INonValueExpression expression)
-        {
-            CheckForValidationType(type, expression.Key);
-            return _rules.SingleOrDefault(x => x.ValidationType == type).ValidateExpression(expression);
-        }
-
-        public string ValidateValueExpression(ValidationType type, IValueExpression expression)
-        {
-            CheckForValidationType(type, expression.Key);
-            return _rules.SingleOrDefault(x => x.ValidationType == type).ValidateValueExpression(expression);
         }
     }
 }

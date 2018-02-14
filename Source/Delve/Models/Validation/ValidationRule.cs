@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq.Expressions;
 
 using Delve.Models.Expression;
@@ -10,12 +8,13 @@ namespace Delve.Models.Validation
     internal class ValidationRule<T, TResult> : IValidationRule
     {
         public ValidationType ValidationType { get; }
-        public Expression<Func<T, TResult>> Expression { get; private set; }
 
-        public string ExpressionString
+        public Type ResultType
         {
-            get { return Expression.ToString(); }
+            get { return typeof(TResult); }
         }
+
+        public Expression<Func<T, TResult>> Expression { get; private set; }
 
         public ValidationRule(Expression<Func<T, TResult>> exp, ValidationType type)
         {
@@ -27,37 +26,13 @@ namespace Delve.Models.Validation
             ValidationType = type;
         }
 
-        public string ValidateExpression(INonValueExpression expression)
+        public IValidationRule ValidateExpression(IExpression exp)
         {
-            return ValidationType.Expand == ValidationType ? 
-                ValidatorHelpers.CheckExpressionIsProperty(Expression) : ExpressionString;
-        }
-
-        public string ValidateValueExpression(IValueExpression expression)
-        {
-            ValidatePropertyType(expression.Key, expression.Values);
-            return ExpressionString;
-        }
-
-        private void ValidatePropertyType(string key, IEnumerable<string> values)
-        {
-            if (Expression.ReturnType == typeof(string)) { return; }
-
-            var currentValue = string.Empty;
-            try
+            if (exp.PropertyType != Expression.ReturnType)
             {
-                var converter = TypeDescriptor.GetConverter(Expression.ReturnType);
-                foreach (var value in values)
-                {
-                    currentValue = value;
-                    converter?.ConvertFromString(value);
-                }
+                throw new InvalidQueryException($"Values of {exp.Key} do not match Type: {Expression.ReturnType}.");
             }
-            catch (NotSupportedException)
-            {
-                throw new InvalidQueryException($"Value: {currentValue}: does not match " +
-                                    $"datatype: {Expression.ReturnType} of registered key: {key}");
-            }
+            return this;
         }
     }
 }

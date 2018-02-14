@@ -13,8 +13,11 @@ namespace Delve.Models
         GreaterThanOrEqual,
         LessThanOrEqual,
         Contains,
+        ContainsInsensitive,
         StartsWith,
-        EndsWith
+        StartsWithInsensitive,
+        EndsWith,
+        EndsWithInsensitive
     }
 
     internal static class QueryOperatorExtensions
@@ -28,21 +31,9 @@ namespace Delve.Models
             { ">=", QueryOperator.GreaterThanOrEqual },
             { "<=", QueryOperator.LessThanOrEqual },
             { "?", QueryOperator.Contains },
-            { "^", QueryOperator.StartsWith },
-            { "$", QueryOperator.EndsWith }
-        };
-
-        private static readonly Dictionary<QueryOperator, string> _formatMaps = new Dictionary<QueryOperator, string>
-        {
-            { QueryOperator.Equal,              "{0}=={1}"},
-            { QueryOperator.NotEqual,           "{0}!={1}"},
-            { QueryOperator.GreaterThan,        "{0}>{1}"},
-            { QueryOperator.LessThan,           "{0}<{1}" },
-            { QueryOperator.GreaterThanOrEqual, "{0}>={1}" },
-            { QueryOperator.LessThanOrEqual,    "{0}<={1}" },
-            { QueryOperator.Contains,           "{0}.Contains({1})" },
-            { QueryOperator.StartsWith,         "{0}.StartsWith({1})" },
-            { QueryOperator.EndsWith,           "{0}.EndsWith({1})" }
+            { "*?", QueryOperator.ContainsInsensitive },
+            { "*^", QueryOperator.StartsWithInsensitive },
+            { "*$", QueryOperator.EndsWithInsensitive }
         };
 
         public static string GetSymbol(this QueryOperator value)
@@ -68,11 +59,6 @@ namespace Delve.Models
             }
 
             return operands;
-        }
-
-        public static string ConstructSubQuery(this QueryOperator op, string left, string right)
-        {
-            return string.Format(_formatMaps[op], left, right);
         }
 
         public static QueryOperator GetQueryOperator(this string str)

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Delve.Models.Expression;
@@ -6,7 +8,7 @@ using Delve.Models.Validation;
 
 namespace Delve.Models
 {
-    internal class ResourceParameter<T> : IResourceParameter<T>, IInternalResourceParameter
+    internal class ResourceParameter<T> : IResourceParameter<T>, IInternalResourceParameter<T>
     {
         private int _pageNumber = 1;
         public int PageNumber
@@ -32,22 +34,41 @@ namespace Delve.Models
             }
         }
 
-        IList<IValueExpression> IInternalResourceParameter.Filter { get { return Filter; } }
-        IList<INonValueExpression> IInternalResourceParameter.OrderBy { get { return OrderBy; } }
-        IList<INonValueExpression> IInternalResourceParameter.Select { get { return Select; } }
-        IList<INonValueExpression> IInternalResourceParameter.Expand { get { return Expand; } }
-
-        internal IList<IValueExpression> Filter { get; private set; }
-        internal IList<INonValueExpression> OrderBy { get; private set; }
-        internal IList<INonValueExpression> Select { get; private set; }
-        internal IList<INonValueExpression> Expand { get; private set; }
-
-        public void ApplyParameters(string filter, string orderBy, string select, string expand)
+        IQueryable<T> IInternalResourceParameter<T>.ApplyOrderBy(IQueryable<T> source)
         {
-            Filter = filter.ParseQuery<IValueExpression>(x => new FilterExpression(x));
-            OrderBy = orderBy.ParseQuery<INonValueExpression>(x => new OrderByExpression(x));
-            Select = select.ParseQuery<INonValueExpression>(x => new SelectExpression(x));
-            Expand = expand.ParseQuery<INonValueExpression>(x => new ExpandExpression(x));
+            OrderBy.ForEach(o => source = o.Apply(source));
+            return source;
+        }
+
+        IQueryable<T> IInternalResourceParameter<T>.ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include)
+        {
+            Expand.ForEach(e => source = e.Apply(source, Include));
+            return source;
+        }
+
+        IQueryable<T> IInternalResourceParameter<T>.ApplyFilters(IQueryable<T> source)
+        {
+            Filter.ForEach(f => source = f.Apply(source));
+            return source;
+        }
+
+        internal List<IExpression<T>> Filter { get; private set; }
+        internal List<IExpression<T>> OrderBy { get; private set; }
+        internal List<IExpression<T>> Select { get; private set; }
+        internal List<IExpression<T>> Expand { get; private set; }
+
+        public void ApplyParameters(IQueryValidator validator, string filter, string orderBy, string select, string expand)
+        {
+            var internalValidator = (IInternalQueryValidator<T>)validator;
+            Filter = filter.ParseQuery(internalValidator, ValidationType.Filter);
+            OrderBy = orderBy.ParseQuery(internalValidator, ValidationType.OrderBy);
+            Select = select.ParseQuery(internalValidator, ValidationType.Select);
+            Expand = expand.ParseQuery(internalValidator, ValidationType.Expand);
+
+            foreach (var expression in Filter.Concat(OrderBy.Concat(Select.Concat(Expand))))
+            {
+                expression.ValidateExpression(validator);
+            }
         }
 
         public Dictionary<string, string> GetPageHeader()
@@ -59,19 +80,6 @@ namespace Delve.Models
             if (Expand.Any())   { dict.Add("expand", Expand.GetQuery());}
 
             return dict;
-        }
-
-        public void ValidateParameters(IQueryValidator validator)
-        {
-            foreach (var expression in OrderBy.Concat(Select).Concat(Expand))
-            {
-                expression.ValidateExpression(validator);
-            }
-
-            foreach (var expression in Filter)
-            {
-                expression.ValidateExpression(validator);
-            }
         }
     }
 

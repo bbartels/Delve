@@ -41,9 +41,11 @@ namespace Delve.Demo.Models
 
             //Allows clients to order by virtual property Age
             CanSelect("Age", x => Math.Round((DateTime.Now - x.DateOfBirth).TotalDays / 365, 2));
+            CanOrder("Age", x => Math.Round((DateTime.Now - x.DateOfBirth).TotalDays / 365, 2));
 
             //Allows clients to filter on virtual property Name
             CanFilter("Name", x => x.FirstName + " " + x.LastName);
+            CanFilter("Id", x => x.Id);
 
             //CanSelect("RoleId", x => x.UserRoles.Select(ur => ur.RoleId));
 

@@ -9,7 +9,7 @@ using Delve.Models.Expression;
 
 namespace Delve.Models.Validation
 {
-    public class AbstractQueryValidator<T> : IQueryValidator<T>, IInternalQueryValidator 
+    public class AbstractQueryValidator<T> : IQueryValidator<T>, IInternalQueryValidator<T>
     {
         private readonly IDictionary<string, ValidationRules> _validationRules = 
                 new Dictionary<string, ValidationRules>(StringComparer.CurrentCultureIgnoreCase);
@@ -74,16 +74,16 @@ namespace Delve.Models.Validation
             }
         }
 
-        string IInternalQueryValidator.ValidateExpression(INonValueExpression expression, ValidationType type)
+        IValidationRule IInternalQueryValidator<T>.ValidateExpression(IExpression expression, ValidationType type)
         {
-             ValidateKey(expression.Key, type);
+            ValidateKey(expression.Key, type);
             return _validationRules[expression.Key].ValidateExpression(type, expression);
         }
 
-        string IInternalQueryValidator.ValidateValueExpression(IValueExpression expression, ValidationType type)
+        Type IInternalQueryValidator<T>.GetResultType(string key, ValidationType type)
         {
-            ValidateKey(expression.Key, type);
-            return _validationRules[expression.Key].ValidateValueExpression(type, expression);
+            ValidateKey(key, type);
+            return _validationRules[key].GetResultType(type, key);
         }
     }
 

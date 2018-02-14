@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using Delve.Models.Expression;
+﻿using System;
+using System.Linq;
 
 namespace Delve.Models
 {
-    internal interface IInternalResourceParameter
+    internal interface IInternalResourceParameter<T>
     {
-        IList<IValueExpression> Filter { get; }
-        IList<INonValueExpression> OrderBy { get; }
-        IList<INonValueExpression> Select { get; }
-        IList<INonValueExpression> Expand { get; }
+        IQueryable<T> ApplyFilters(IQueryable<T> source);
+        IQueryable<T> ApplyOrderBy(IQueryable<T> source);
+        IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include);
     }
 }

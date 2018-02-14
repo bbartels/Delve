@@ -59,12 +59,11 @@ namespace Delve.AspNetCore
 
             try
             {
-                param.ApplyParameters(coll[attributes[2]], coll[attributes[3]], coll[attributes[4]], coll[attributes[5]]);
                 var validatorType = typeof(IQueryValidator<>).MakeGenericType(elementTypes[0]);
 
                 if (bindingContext.HttpContext.RequestServices.GetService(validatorType) is IQueryValidator validator)
                 {
-                    param.ValidateParameters(validator);
+                    param.ApplyParameters(validator, coll[attributes[2]], coll[attributes[3]], coll[attributes[4]], coll[attributes[5]]);
                 }
 
                 else

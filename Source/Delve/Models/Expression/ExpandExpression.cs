@@ -1,29 +1,21 @@
-﻿using Delve.Models.Validation;
+﻿using System;
+using System.Linq;
 
 namespace Delve.Models.Expression
 {
-    internal class ExpandExpression : INonValueExpression
+    internal class ExpandExpression<T, TResult> : BaseExpression<T, TResult>
     {
-        public string PropertyExpression { get; private set; }
-        public string Key { get; }
-        public string Query
-        {
-            get { return Key; }
-        }
+        public override string Query { get { return Key; } }
 
         public ExpandExpression(string key)
         {
             Key = key;
         }
 
-        public void ValidateExpression(IQueryValidator validator)
+        public override IQueryable<T> Apply(IQueryable<T> source, 
+            Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
         {
-            PropertyExpression = ((IInternalQueryValidator)validator).ValidateExpression(this, ValidationType.Expand);
-        }
-
-        public string GetDynamicLinqQuery()
-        {
-            return PropertyExpression;
+            return customFunc != null ? customFunc(source, Key) : source;
         }
     }
 }

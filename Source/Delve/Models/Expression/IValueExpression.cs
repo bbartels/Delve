@@ -1,8 +1,10 @@
-﻿namespace Delve.Models.Expression
+﻿using System;
+using System.Linq;
+
+namespace Delve.Models.Expression
 {
-    internal interface IValueExpression : IExpression
+    internal interface IExpression<T> : IExpression
     {
-        string[] Values { get; }
-        (string query, string[] values) GetDynamicLinqQuery(int startIndex = 0);
+        IQueryable<T> Apply(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> customFunc = null);
     }
 }

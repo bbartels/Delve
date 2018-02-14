@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq.Dynamic.Core;
 using System.Linq;
 using System.Reflection;
 
@@ -13,7 +12,7 @@ namespace Delve.Extensions
     {
         public static IEnumerable<dynamic> ShapeData<T>(this IEnumerable<T> source, IResourceParameter param)
         {
-            if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
+            /*if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
 
             var internalParam = (IInternalResourceParameter)param;
             if (internalParam.Select.Count != 0)
@@ -37,7 +36,8 @@ namespace Delve.Extensions
                 objects.Add((ExpandoObject)modifiedObject);
             }
 
-            return objects;
+            return objects;*/
+            return null;
         }
     }
 }

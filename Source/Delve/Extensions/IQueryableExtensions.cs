@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
 using Delve.Models;
@@ -19,7 +18,7 @@ namespace Delve.Extensions
             int pageNum = GetPageNum(count, param.PageSize, param.PageNumber);
             var test = source.Skip((pageNum - 1) * param.PageSize).Take(param.PageSize);
             var items = await ToListAsync(test);
-            return new Models.PagedResult<T>(items, pageNum, param.PageSize, count);
+            return new PagedResult<T>(items, pageNum, param.PageSize, count);
         }
 
         public static IPagedResult<T> ToPagedResult<T>(this IQueryable<T> source, IResourceParameter<T> param)
@@ -28,7 +27,7 @@ namespace Delve.Extensions
             int pageNum = GetPageNum(count, param.PageSize, param.PageNumber);
 
             var items = source.Skip((pageNum - 1) * param.PageSize).Take(param.PageSize).ToList();
-            return new Models.PagedResult<T>(items, pageNum, param.PageSize, count);
+            return new PagedResult<T>(items, pageNum, param.PageSize, count);
         }
 
         private static int GetPageNum(int count, int pageSize, int pageNum)
@@ -41,18 +40,15 @@ namespace Delve.Extensions
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var (query, values) = FilterExpression.GetDynamicLinqQuery(((IInternalResourceParameter)param).Filter);
-            if (query == null || values == null) { return source; }
-
-            return source.Where(query, values);
+            return ((IInternalResourceParameter<T>)param).ApplyFilters(source);
         }
 
         public static IQueryable<T> ApplyOrderBy<T>(this IQueryable<T> source, IResourceParameter<T> param)
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
-            var query = OrderByExpression.GetDynamicLinqQuery(((IInternalResourceParameter)param).OrderBy);
-            return query == null ? source : source.OrderBy(query);
+            
+            return ((IInternalResourceParameter<T>)param).ApplyOrderBy(source);
         }
 
         public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include, IResourceParameter<T> param)
@@ -60,9 +56,7 @@ namespace Delve.Extensions
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
             if (Include == null) { return source; }
 
-            var expands = ((IInternalResourceParameter)param).Expand;
-
-            return expands.Aggregate(source, (current, expand) => Include(current, expand.GetDynamicLinqQuery()));
+            return ((IInternalResourceParameter<T>)param).ApplyExpand(source, Include);
         }
     }
 }

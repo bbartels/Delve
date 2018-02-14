@@ -7,7 +7,6 @@ using Delve.Demo.Dto;
 using Delve.Demo.Models;
 using Delve.Demo.Persistence;
 using Delve.AspNetCore;
-using Delve.Extensions;
 using Delve.Models;
 
 namespace Delve.Demo.Controller
@@ -43,7 +42,7 @@ namespace Delve.Demo.Controller
             this.AddPaginationHeader(param, usersDb, _urlHelper);
 
             //Shapes data on return.
-            return Ok(users.ShapeData(param));
+            return Ok(users);
         }
     }
 }

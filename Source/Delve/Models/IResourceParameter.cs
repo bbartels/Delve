@@ -9,11 +9,9 @@ namespace Delve.Models
         int PageNumber { get; set; }
         int PageSize { get; set; }
 
-        void ApplyParameters(string filter, string orderBy, string select, string expand);
+        void ApplyParameters(IQueryValidator validator, string filter, string orderBy, string select, string expand);
 
         Dictionary<string, string> GetPageHeader();
-
-        void ValidateParameters(IQueryValidator validator);
     }
 
     public interface IResourceParameter<T> : IResourceParameter { }
