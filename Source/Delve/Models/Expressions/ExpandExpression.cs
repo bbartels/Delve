@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Linq;
 using Delve.Models.Expressions;
 using Delve.Models.Validation;
@@ -15,10 +14,9 @@ namespace Delve.Models.Expression
             Key = QuerySanitizer.GetKey(ValidationType.Expand, key);
         }
 
-        public override IQueryable<T> Apply(IQueryable<T> source, 
-            Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
+        public override IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
         {
-            return customFunc != null ? customFunc(source, Key) : source;
+            return include != null ? include(source, Key) : source;
         }
     }
 }

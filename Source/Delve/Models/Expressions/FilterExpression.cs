@@ -35,14 +35,12 @@ namespace Delve.Models
             OperationExpression = ExpressionFactory<TResult>.RequestFunc(Operator);
         }
 
-        public override IQueryable<T> Apply(IQueryable<T> source, 
-            Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
+        public override IQueryable<T> ApplyFilter(IQueryable<T> source)
         {
-            Func<TResult, TResult, bool> compiledExp = OperationExpression.Compile();
-            Func<T, TResult> compiledProp = Property.Compile();
-            var values = Values.ToList();
+            var compiledExp = OperationExpression.Compile();
+            var compiledProp = Property.Compile();
 
-            return source.Where(x => values.Any(v => compiledExp(v, compiledProp(x))));
+            return source.Where(x => Values.Any(v => compiledExp(v, compiledProp(x))));
         }
     }
 }

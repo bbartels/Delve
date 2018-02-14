@@ -36,13 +36,20 @@ namespace Delve.Models
 
         IQueryable<T> IInternalResourceParameter<T>.ApplyOrderBy(IQueryable<T> source)
         {
-            OrderBy.ForEach(o => source = o.Apply(source));
+            bool thenBy = false;
+
+            foreach (var sort in OrderBy)
+            {
+                sort.ApplySort(source, thenBy);
+                thenBy = true;
+            }
+
             return source;
         }
 
         IQueryable<T> IInternalResourceParameter<T>.ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include)
         {
-            Expand.ForEach(e => source = e.Apply(source, Include));
+            Expand.ForEach(e => source = e.ApplyExpand(source, Include));
             return source;
         }
 
@@ -58,7 +65,7 @@ namespace Delve.Models
 
         IQueryable<T> IInternalResourceParameter<T>.ApplyFilters(IQueryable<T> source)
         {
-            Filter.ForEach(f => source = f.Apply(source));
+            Filter.ForEach(f => source = f.ApplyFilter(source));
             return source;
         }
 

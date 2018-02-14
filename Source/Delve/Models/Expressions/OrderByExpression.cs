@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using Delve.Models.Expressions;
 using Delve.Models.Validation;
@@ -22,10 +21,22 @@ namespace Delve.Models
             Key = QuerySanitizer.GetKey(ValidationType.OrderBy, orderBy);
         }
 
-        public override IQueryable<T> Apply(IQueryable<T> source, 
-            Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
+        public override IQueryable<T> ApplySort(IQueryable<T> source, bool thenBy)
         {
-            return Descending ? source.OrderByDescending(x => Property.Compile()(x)) : source.OrderBy(x => Property.Compile()(x));
+            var property = Property.Compile();
+
+            if (!thenBy)
+            {
+                return Descending
+                    ? source.OrderByDescending(x => property(x)) 
+                    : source.OrderBy(x => property(x));
+            }
+
+            var orderedSource = source as IOrderedQueryable<T>;
+
+            return Descending
+                ? orderedSource.ThenByDescending(x => property(x))
+                : orderedSource.ThenBy(x => property(x));
         }
     }
 }

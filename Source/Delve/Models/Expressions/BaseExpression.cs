@@ -13,9 +13,6 @@ namespace Delve.Models.Expressions
         public Type PropertyType { get { return typeof(TResult); } }
         public Expression<Func<T, TResult>> Property;
 
-        public abstract IQueryable<T> Apply(IQueryable<T> source,
-            Func<IQueryable<T>, string, IQueryable<T>> customFunc = null);
-
         public void ValidateExpression(IQueryValidator validator)
         {
             var rule = ((IInternalQueryValidator<T>)validator).ValidateExpression(this, IExpressionExtensions.GetValidationType(GetType()));
@@ -29,6 +26,21 @@ namespace Delve.Models.Expressions
             {
                 throw new RuntimeException("Could not cast validationrule.");
             }
+        }
+
+        public virtual IQueryable<T> ApplyFilter(IQueryable<T> source)
+        {
+            return source;
+        }
+
+        public virtual IQueryable<T> ApplySort(IQueryable<T> source, bool thenBy)
+        {
+            return source;
+        }
+
+        public virtual IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
+        {
+            return source;
         }
     }
 }

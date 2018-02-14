@@ -15,6 +15,9 @@ namespace Delve.Models.Expressions
 
     internal interface IExpression<T> : IExpression
     {
-        IQueryable<T> Apply(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> customFunc = null);
+        IQueryable<T> ApplyFilter(IQueryable<T> source);
+        IQueryable<T> ApplySort(IQueryable<T> source, bool thenBy);
+        IQueryable<T> ApplyExpand(IQueryable<T> source,
+            Func<IQueryable<T>, string, IQueryable<T>> include);
     }
 }
