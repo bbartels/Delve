@@ -36,13 +36,13 @@ namespace Delve.Demo.Controller
         public async Task<IActionResult> GetUsers(IResourceParameter<User> param)
         {
             var usersDb = await _unitOfWork.Users.GetAsync(param);
-            var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(usersDb);
+            //var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(usersDb);
 
             //Adds Paginationheader to response
             this.AddPaginationHeader(param, usersDb, _urlHelper);
 
             //Shapes data on return.
-            return Ok(users);
+            return Ok(usersDb.Shape(param));
         }
     }
 }

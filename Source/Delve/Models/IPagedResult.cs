@@ -13,6 +13,6 @@ namespace Delve.Models
         bool HasPrevious { get; }
         bool HasNext { get; }
 
-        IEnumerable<dynamic> Shape(IResourceParameter param);
+        dynamic Shape(IResourceParameter param);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Delve.Demo.Models
 {
@@ -43,7 +44,7 @@ namespace Delve.Demo.Models
             CanFilter("Name", x => x.FirstName + " " + x.LastName);
             CanFilter("Id", x => x.Id);
 
-            //CanSelect("RoleId", x => x.UserRoles.Select(ur => ur.RoleId));
+            CanSelect("RoleId", x => x.UserRoles.Select(ur => ur.RoleId));
 
             //Allows clients to expand on UserRoles (EF Core Include)
             //WARNING: Can lead to bad performance if used incorrectly.

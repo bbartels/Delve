@@ -18,8 +18,8 @@ namespace Delve.Models.Validation
         {
             if (rule.ValidationType != ValidationType.Expand && !ValidatorHelpers.IsValidType(typeof(TResult)))
             {
-                throw new InvalidValidationBuilderException($"Registered property ({key})" +
-                                                            $" cannot be of type {typeof(TResult)}.");
+                //throw new InvalidValidationBuilderException($"Registered property ({key})" +
+                  //                                          $" cannot be of type {typeof(TResult)}.");
             }
 
             if (rule.ValidationType == ValidationType.Expand && !ValidatorHelpers.IsValidExpandType(typeof(TResult)))

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,6 +44,16 @@ namespace Delve.Models
         {
             Expand.ForEach(e => source = e.Apply(source, Include));
             return source;
+        }
+
+        dynamic IInternalResourceParameter<T>.ApplySelect(IEnumerable<T> source)
+        {
+            foreach (var select in Select)
+            {
+                return ((ISelectExpression<T>)select).ApplySelect(source);
+            }
+
+            return null;
         }
 
         IQueryable<T> IInternalResourceParameter<T>.ApplyFilters(IQueryable<T> source)
