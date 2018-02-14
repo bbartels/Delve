@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -30,17 +31,33 @@ namespace Delve.Models.Expressions
 
         public virtual IQueryable<T> ApplyFilter(IQueryable<T> source)
         {
-            return source;
+            throw new RuntimeException("This method should not be called. Please report to github.com/bbartels/delve.");
         }
 
         public virtual IQueryable<T> ApplySort(IQueryable<T> source, bool thenBy)
         {
-            return source;
+            throw new RuntimeException("This method should not be called. Please report to github.com/bbartels/delve.");
         }
 
         public virtual IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
         {
-            return source;
+            throw new RuntimeException("This method should not be called. Please report to github.com/bbartels/delve.");
+        }
+
+        public virtual string GetSelectProperty()
+        {
+            throw new RuntimeException("This method should not be called. Please report to github.com/bbartels/delve.");
+        }
+
+        public virtual Func<T, (string, object)> GetPropertyMapping()
+        {
+            throw new RuntimeException("This method should not be called. Please report to github.com/bbartels/delve.");
+        }
+
+        protected string GetPropertyName()
+        {
+            var propString = Property.ToString();
+            return propString.Substring(propString.IndexOf('.') + 1).TrimEnd(')');
         }
     }
 }

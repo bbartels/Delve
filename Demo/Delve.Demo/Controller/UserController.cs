@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +11,7 @@ using Delve.Demo.Dto;
 using Delve.Demo.Models;
 using Delve.Demo.Persistence;
 using Delve.AspNetCore;
+using Delve.Extensions;
 using Delve.Models;
 
 namespace Delve.Demo.Controller
@@ -36,13 +41,14 @@ namespace Delve.Demo.Controller
         public async Task<IActionResult> GetUsers(IResourceParameter<User> param)
         {
             var usersDb = await _unitOfWork.Users.GetAsync(param);
-            //var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(usersDb);
+            var users = _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(usersDb);
+
 
             //Adds Paginationheader to response
             this.AddPaginationHeader(param, usersDb, _urlHelper);
 
             //Shapes data on return.
-            return Ok(usersDb.Shape(param));
+            return Ok(usersDb.ShapeData(param));
         }
     }
 }

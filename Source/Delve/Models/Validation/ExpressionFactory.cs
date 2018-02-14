@@ -14,10 +14,11 @@ namespace Delve.Models
             (x, y) => ((IComparable)x).CompareTo(y) >= 0,
             (x, y) => ((IComparable)x).CompareTo(y) <= 0,
             (x, y) => ((string)(object)x).IndexOf((string)(object)y, StringComparison.Ordinal) != -1,
-            (x, y) => ((string)(object)x).IndexOf((string)(object)y, StringComparison.OrdinalIgnoreCase) != -1,
             (x, y) => ((string)(object)x).StartsWith((string)(object)y, StringComparison.Ordinal),
-            (x, y) => ((string)(object)x).StartsWith((string)(object)y, StringComparison.OrdinalIgnoreCase),
             (x, y) => ((string)(object)x).EndsWith((string)(object)y, StringComparison.Ordinal),
+            (x, y) => ((string)(object)x).Equals((string)(object)y, StringComparison.OrdinalIgnoreCase),
+            (x, y) => ((string)(object)x).IndexOf((string)(object)y, StringComparison.OrdinalIgnoreCase) != -1,
+            (x, y) => ((string)(object)x).StartsWith((string)(object)y, StringComparison.OrdinalIgnoreCase),
             (x, y) => ((string)(object)x).EndsWith((string)(object)y, StringComparison.OrdinalIgnoreCase)
         };
 

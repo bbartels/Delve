@@ -17,6 +17,7 @@ namespace Delve.Models.Validation
             { "?", QueryOperator.Contains },
             { "^", QueryOperator.StartsWith },
             { "$", QueryOperator.EndsWith },
+            { "*==", QueryOperator.EqualInsensitive },
             { "*?", QueryOperator.ContainsInsensitive },
             { "*^", QueryOperator.StartsWithInsensitive },
             { "*$", QueryOperator.EndsWithInsensitive }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Delve.Models.Validation;
 
@@ -19,5 +20,6 @@ namespace Delve.Models.Expressions
         IQueryable<T> ApplySort(IQueryable<T> source, bool thenBy);
         IQueryable<T> ApplyExpand(IQueryable<T> source,
             Func<IQueryable<T>, string, IQueryable<T>> include);
+        Func<T, (string, object)> GetPropertyMapping();
     }
 }

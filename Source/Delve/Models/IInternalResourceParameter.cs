@@ -9,6 +9,6 @@ namespace Delve.Models
         IQueryable<T> ApplyFilters(IQueryable<T> source);
         IQueryable<T> ApplyOrderBy(IQueryable<T> source);
         IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include);
-        dynamic ApplySelect(IEnumerable<T> source);
+        IList<object> ApplySelect(IEnumerable<T> source);
     }
 }

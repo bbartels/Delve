@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 using Delve.Models.Expressions;
@@ -40,7 +41,7 @@ namespace Delve.Models
 
             foreach (var sort in OrderBy)
             {
-                sort.ApplySort(source, thenBy);
+                source = sort.ApplySort(source, thenBy);
                 thenBy = true;
             }
 
@@ -53,14 +54,28 @@ namespace Delve.Models
             return source;
         }
 
-        dynamic IInternalResourceParameter<T>.ApplySelect(IEnumerable<T> source)
+        IList<object> IInternalResourceParameter<T>.ApplySelect(IEnumerable<T> source)
         {
-            foreach (var select in Select)
+            if (Select.Count == 0)
             {
-                return ((ISelectExpression<T>)select).ApplySelect(source);
+                return source.Select(x => (object)x).ToList();
             }
 
-            return null;
+            var test = Select.Select(x => x.GetPropertyMapping());
+
+            object test3(T user, IEnumerable<Func<T, (string, object)>> func)
+            {
+                var t = new ExpandoObject() as IDictionary<string, object>;
+                foreach (var f in func)
+                {
+                    var elements = f(user);
+                    t.Add(elements.Item1, elements.Item2);
+                }
+
+                return (ExpandoObject)t;
+            }
+
+            return source.Select(x => test3(x, test)).ToList();
         }
 
         IQueryable<T> IInternalResourceParameter<T>.ApplyFilters(IQueryable<T> source)

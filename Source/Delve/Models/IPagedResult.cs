@@ -12,7 +12,5 @@ namespace Delve.Models
 
         bool HasPrevious { get; }
         bool HasNext { get; }
-
-        dynamic Shape(IResourceParameter param);
     }
 }

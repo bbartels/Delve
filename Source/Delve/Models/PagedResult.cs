@@ -30,11 +30,5 @@ namespace Delve.Models
             TotalCount = count;
             TotalPages = (count + pageSize - 1) / pageSize;
         }
-
-        public dynamic Shape(IResourceParameter param)
-        {
-            var internalParam = (IInternalResourceParameter<T>)param;
-            return internalParam.ApplySelect(this);
-        }
     }
 }

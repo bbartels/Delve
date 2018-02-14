@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using Delve.Models;
 
 namespace Delve.Extensions
 {
     public static class IEnumerableExtensions
     {
-        public static IEnumerable<dynamic> ShapeData<T>(this IEnumerable<T> source, IResourceParameter param)
+        public static IEnumerable<object> ShapeData<TEntity>(this IEnumerable<TEntity> source, IResourceParameter param)
         {
-            //if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
+            if (source == null) { throw new ArgumentNullException($"{nameof(source)}"); }
 
-            //var internalParam = (IInternalResourceParameter<T>)param;
-            //if (internalParam.Select.Count != 0)
-            //{
-             //   return source.AsQueryable().Select(SelectExpression.GetDynamicLinqQuery(internalParam.Select)).ToDynamicArray();
-            //}
-
-            return null;
+            var internalParam = (IInternalResourceParameter<TEntity>)param;
+            return internalParam.ApplySelect(source);
         }
     }
 }

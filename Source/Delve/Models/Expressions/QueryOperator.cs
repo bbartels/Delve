@@ -9,10 +9,11 @@
         GreaterThanOrEqual,
         LessThanOrEqual,
         Contains,
-        ContainsInsensitive,
         StartsWith,
-        StartsWithInsensitive,
         EndsWith,
-        EndsWithInsensitive
+        EqualInsensitive,
+        StartsWithInsensitive,
+        EndsWithInsensitive,
+        ContainsInsensitive
     }
 }

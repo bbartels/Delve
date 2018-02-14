@@ -48,7 +48,8 @@ namespace Delve.Extensions
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
 
             
-            return ((IInternalResourceParameter<T>)param).ApplyOrderBy(source);
+            source = ((IInternalResourceParameter<T>)param).ApplyOrderBy(source);
+            return source;
         }
 
         public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> source, 

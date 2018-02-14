@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -16,18 +17,7 @@ namespace Delve.Models.Validation
 
         private void AddRule<TResult>(string key, IValidationRule rule)
         {
-            if (rule.ValidationType != ValidationType.Expand && !ValidatorHelpers.IsValidType(typeof(TResult)))
-            {
-                //throw new InvalidValidationBuilderException($"Registered property ({key})" +
-                  //                                          $" cannot be of type {typeof(TResult)}.");
-            }
-
-            if (rule.ValidationType == ValidationType.Expand && !ValidatorHelpers.IsValidExpandType(typeof(TResult)))
-            {
-                throw new InvalidValidationBuilderException($"Registered property ({key})" +
-                                                            $" cannot be of type {typeof(TResult)}." +
-                                                             "Expand is limited to Enumerable Types.");
-            }
+            ValidatorHelpers.CheckTypeValid(typeof(TResult), rule.ValidationType, key);
 
             if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_]+$"))
             {
@@ -94,9 +84,48 @@ namespace Delve.Models.Validation
             typeof(string), typeof(DateTime), typeof(TimeSpan)
         };
 
-        public static bool IsValidType(Type type)
+        public static void CheckTypeValid(Type type, ValidationType valType, string key)
         {
-            return type.IsPrimitive || _validNonPrimitive.Contains(type);
+            switch (valType)
+            {
+                case ValidationType.Select:
+                {
+                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type) 
+                                          && !typeof(IEnumerable).IsAssignableFrom(type))
+                    {
+                        throw new InvalidValidationBuilderException($"Registered property ({key})" +
+                                                                    $" can not be of type {type}.");
+                    }
+                } break;
+                case ValidationType.OrderBy:
+                {
+                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type))
+                    {
+                        throw new InvalidValidationBuilderException
+                            ($"Registered property: {key} can not be of type {type}.");
+                    };
+                } break;
+                case ValidationType.Filter:
+                {
+                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type))
+                    {
+                        throw new InvalidValidationBuilderException
+                            ($"Registered property: {key} can not be of type {type}.");
+                    };
+                } break;
+                case ValidationType.Expand:
+                {
+                    if (!typeof(IEnumerable).IsAssignableFrom(type))
+                    {
+                        throw new InvalidValidationBuilderException
+                            ($"Registered property: {key} can not be of type: {type}.Expand is limited to Enumerable types");
+                    }
+                } break;
+                default:
+                {
+                    throw new ArgumentOutOfRangeException(nameof(valType), valType, null);
+                }
+            }
         }
 
         public static bool IsValidExpandType(Type type)
