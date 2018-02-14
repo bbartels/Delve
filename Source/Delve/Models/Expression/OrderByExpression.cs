@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Delve.Models.Expression;
+using Delve.Models.Validation;
 
 namespace Delve.Models
 {
@@ -16,10 +17,9 @@ namespace Delve.Models
             if (orderBy.StartsWith("-"))
             {
                 Descending = true;
-                orderBy = orderBy.Substring(1, orderBy.Length - 1);
             }
 
-            Key = orderBy;
+            Key = QuerySanitizer.GetKey(ValidationType.OrderBy, orderBy);
         }
 
         public override IQueryable<T> Apply(IQueryable<T> source, 

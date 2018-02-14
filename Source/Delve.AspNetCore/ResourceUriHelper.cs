@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Delve.Models;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Delve.AspNetCore
 {

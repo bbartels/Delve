@@ -26,7 +26,7 @@ namespace Delve.Models.Validation
             {
                 throw new InvalidValidationBuilderException($"Registered property ({key})" +
                                                             $" cannot be of type {typeof(TResult)}." +
-                                                            $"Expand is limited to Enumerable Types.");
+                                                             "Expand is limited to Enumerable Types.");
             }
 
             if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_]+$"))

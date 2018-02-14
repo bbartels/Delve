@@ -11,9 +11,6 @@ using Delve.Demo.Persistence;
 using Delve.Demo.Models;
 using Delve.Models.Validation;
 using Delve.AspNetCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Delve.Demo
 {

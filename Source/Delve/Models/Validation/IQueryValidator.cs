@@ -10,9 +10,7 @@ namespace Delve.Models.Validation
         Type GetResultType(string key, ValidationType type);
     }
 
-    public interface IQueryValidator 
-    {
-    }
+    public interface IQueryValidator { }
 
     public interface IQueryValidator<T> : IQueryValidator { }
 }

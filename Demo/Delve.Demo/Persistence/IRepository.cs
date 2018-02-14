@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Delve.Models;
-using Delve;
 
 namespace Delve.Demo.Persistence
 {

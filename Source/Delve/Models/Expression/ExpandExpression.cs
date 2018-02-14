@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Delve.Models.Validation;
 
 namespace Delve.Models.Expression
 {
@@ -9,7 +10,7 @@ namespace Delve.Models.Expression
 
         public ExpandExpression(string key)
         {
-            Key = key;
+            Key = QuerySanitizer.GetKey(ValidationType.Expand, key);
         }
 
         public override IQueryable<T> Apply(IQueryable<T> source, 

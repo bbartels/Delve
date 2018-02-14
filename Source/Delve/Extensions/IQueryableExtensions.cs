@@ -51,12 +51,11 @@ namespace Delve.Extensions
             return ((IInternalResourceParameter<T>)param).ApplyOrderBy(source);
         }
 
-        public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include, IResourceParameter<T> param)
+        public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> source, 
+            Func<IQueryable<T>, string, IQueryable<T>> Include, IResourceParameter<T> param)
         {
             if (source == null) { throw new ArgumentException($"{ nameof(source) }"); }
-            if (Include == null) { return source; }
-
-            return ((IInternalResourceParameter<T>)param).ApplyExpand(source, Include);
+            return Include == null ? source : ((IInternalResourceParameter<T>)param).ApplyExpand(source, Include);
         }
     }
 }

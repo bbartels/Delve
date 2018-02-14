@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Delve.Models.Expression;
+using Delve.Models.Validation;
 
 namespace Delve.Models
 {
@@ -12,7 +13,10 @@ namespace Delve.Models
 
         public override string Query
         {
-            get { return $"{Key}{Operator.GetSymbol()}{StringValues.Aggregate((x, y) => $"{x},{y}")}"; }
+            get
+            {
+                return $"{Key}{QuerySanitizer.GetFilterSymbol(Operator)}{StringValues.Aggregate((x, y) => $"{x},{y}")}";
+            }
         }
 
         public Func<TResult, TResult, bool> OperationExpression { get; private set; }
@@ -21,11 +25,11 @@ namespace Delve.Models
 
         public FilterExpression(string filter)
         {
-            Operator = filter.GetQueryOperator();
-            var (op1, op2) = filter.GetOperands();
-            Key = op1;
-            StringValues = op2.Split('|').Select(property => property.Trim()).ToArray();
+            Operator = QuerySanitizer.GetFilterOperator(filter);
+            Key = QuerySanitizer.GetKey(ValidationType.Filter, filter);
+            StringValues = QuerySanitizer.GetFilterValues(filter);
             this.ValidatePropertyType(Key, StringValues);
+
             Values = StringValues.Select(x => (TResult)Convert.ChangeType(x, typeof(TResult))).ToArray();
             OperationExpression = ExpressionFactory<TResult>.RequestFunc(Operator);
         }
