@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 
 namespace Delve.Models.Validation
 {

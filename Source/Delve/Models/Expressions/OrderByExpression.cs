@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 using Delve.Models.Validation;
 
 namespace Delve.Models
@@ -25,7 +25,7 @@ namespace Delve.Models
         public override IQueryable<T> Apply(IQueryable<T> source, 
             Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
         {
-            return Descending ? source.OrderByDescending(x => Property(x)) : source.OrderBy(x => Property(x));
+            return Descending ? source.OrderByDescending(x => Property.Compile()(x)) : source.OrderBy(x => Property.Compile()(x));
         }
     }
 }

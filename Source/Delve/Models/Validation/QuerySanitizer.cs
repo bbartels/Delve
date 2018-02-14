@@ -73,6 +73,7 @@ namespace Delve.Models.Validation
         private static (string o1, string o2) GetOperands(string str)
         {
             var operands = (string.Empty, string.Empty);
+
             foreach (var op in _operatorMaps)
             {
                 int index = str.IndexOf(op.Key, StringComparison.Ordinal);
@@ -84,7 +85,12 @@ namespace Delve.Models.Validation
 
             if (operands.Item1 == string.Empty || operands.Item2 == string.Empty)
             {
-                throw new InvalidQueryException($"{str} does not contain valid operands.");
+                if (str.Count(c => c == '=') == 1)
+                {
+                    throw new InvalidQueryException("Unknown filter operator '='. Did you mean '=='?");
+                }
+
+                throw new InvalidQueryException($"{str} does not contain a valid {nameof(QueryOperator)}.");
             }
 
             return operands;

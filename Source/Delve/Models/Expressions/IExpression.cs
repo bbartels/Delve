@@ -2,7 +2,7 @@
 using System.Linq;
 using Delve.Models.Validation;
 
-namespace Delve.Models.Expression
+namespace Delve.Models.Expressions
 {
     internal interface IExpression
     {

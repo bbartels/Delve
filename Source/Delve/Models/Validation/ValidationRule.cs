@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 
 namespace Delve.Models.Validation
 {

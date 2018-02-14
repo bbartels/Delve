@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 
 namespace Delve.Models.Validation
 {

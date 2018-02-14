@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq.Expressions;
 
 namespace Delve.Models
 {
     internal static class ExpressionFactory<TResult>
     {
-        private static readonly Func<TResult, TResult, bool>[] funcs =
+        private static readonly Expression<Func<TResult, TResult, bool>>[] funcs =
         {
             (x, y) => x.Equals(y),
             (x, y) => !x.Equals(y),
@@ -20,7 +21,7 @@ namespace Delve.Models
             (x, y) => ((string)(object)x).EndsWith((string)(object)y, StringComparison.OrdinalIgnoreCase)
         };
 
-        public static Func<TResult, TResult, bool> RequestFunc(QueryOperator op)
+        public static Expression<Func<TResult, TResult, bool>> RequestFunc(QueryOperator op)
         {
             return funcs[(int)op];
         }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 
 namespace Delve.Models
 {
@@ -23,7 +23,7 @@ namespace Delve.Models
 
         public dynamic ApplySelect(IEnumerable<T> source)
         {
-            return source.Select(x => Property(x));
+            return source;
         }
     }
 }

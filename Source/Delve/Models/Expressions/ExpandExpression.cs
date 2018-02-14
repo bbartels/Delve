@@ -1,5 +1,7 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
+using Delve.Models.Expressions;
 using Delve.Models.Validation;
 
 namespace Delve.Models.Expression

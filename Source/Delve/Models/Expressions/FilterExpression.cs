@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 
-using Delve.Models.Expression;
+using Delve.Models.Expressions;
 using Delve.Models.Validation;
 
 namespace Delve.Models
@@ -19,7 +20,7 @@ namespace Delve.Models
             }
         }
 
-        public Func<TResult, TResult, bool> OperationExpression { get; private set; }
+        public Expression<Func<TResult, TResult, bool>> OperationExpression { get; private set; }
         public TResult[] Values { get; }
 
 
@@ -37,7 +38,11 @@ namespace Delve.Models
         public override IQueryable<T> Apply(IQueryable<T> source, 
             Func<IQueryable<T>, string, IQueryable<T>> customFunc = null)
         {
-            return Values.Aggregate(source, (current, value) => current.Where(x => OperationExpression(Property(x), value)));
+            Func<TResult, TResult, bool> compiledExp = OperationExpression.Compile();
+            Func<T, TResult> compiledProp = Property.Compile();
+            var values = Values.ToList();
+
+            return source.Where(x => values.Any(v => compiledExp(v, compiledProp(x))));
         }
     }
 }

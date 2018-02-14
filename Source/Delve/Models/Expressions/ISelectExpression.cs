@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Delve.Models.Expression
+namespace Delve.Models.Expressions
 {
     internal interface ISelectExpression<T>
     {
