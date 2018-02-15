@@ -56,9 +56,10 @@ namespace Delve.Models.Validation
 
         protected void AllowAll<TResult>(string key, Expression<Func<T, TResult>> exp)
         {
+            CanFilter(key, exp);
             CanSelect(key, exp);
             CanOrder(key, exp);
-            CanSelect(key, exp);
+            CanExpand(key, exp);
         }
 
         private void ValidateKey(string key, ValidationType type)
