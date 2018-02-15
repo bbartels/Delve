@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -50,7 +49,7 @@ namespace Delve.Models.Validation
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.OrderBy));
         }
 
-        protected void CanExpand<TResult>(string key, Expression<Func<T, TResult>> exp) where TResult : class, IEnumerable
+        protected void CanExpand<TResult>(string key, Expression<Func<T, TResult>> exp) where TResult : class
         {
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Expand));
         }
@@ -122,10 +121,10 @@ namespace Delve.Models.Validation
                 } break;
                 case ValidationType.Expand:
                 {
-                    if (!typeof(IEnumerable).IsAssignableFrom(type))
+                    if (type.IsValueType)
                     {
                         throw new InvalidValidationBuilderException
-                            ($"Registered property: {key} can not be of type: {type}.Expand is limited to Enumerable types");
+                            ($"Registered property: {key} can not be of type: {type}. Expand is limited to classes.");
                     }
                 } break;
                 default:
@@ -133,11 +132,6 @@ namespace Delve.Models.Validation
                     throw new ArgumentOutOfRangeException(nameof(valType), valType, null);
                 }
             }
-        }
-
-        public static bool IsValidExpandType(Type type)
-        {
-            return typeof(IEnumerable).IsAssignableFrom(type);
         }
 
         public static string CheckExpressionIsProperty<T, TResult>(Expression<Func<T, TResult>> expression)

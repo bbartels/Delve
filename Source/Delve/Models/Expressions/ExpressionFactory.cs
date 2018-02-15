@@ -9,6 +9,7 @@ namespace Delve.Models.Expressions
             (x, y) => x.Equals(y),
             (x, y) => ((string)(object)x).Equals((string)(object)y, StringComparison.OrdinalIgnoreCase),
             (x, y) => !x.Equals(y),
+            (x, y) => !((string)(object)x).Equals((string)(object)y, StringComparison.OrdinalIgnoreCase),
             (x, y) => ((IComparable)y).CompareTo(x) > 0,
             (x, y) => ((IComparable)y).CompareTo(x) < 0,
             (x, y) => ((IComparable)y).CompareTo(x) >= 0,

@@ -5,6 +5,7 @@
         Equal,
         EqualInsensitive,
         NotEqual,
+        NotEqualInsensitive,
         GreaterThan,
         LessThan,
         GreaterThanOrEqual,

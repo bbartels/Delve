@@ -13,6 +13,7 @@ namespace Delve.Models.Expressions
             { "==", QueryOperator.Equal },
             { "==*", QueryOperator.EqualInsensitive },
             { "!=", QueryOperator.NotEqual },
+            { "!=*", QueryOperator.NotEqualInsensitive },
             { ">", QueryOperator.GreaterThan },
             { "<", QueryOperator.LessThan},
             { ">=", QueryOperator.GreaterThanOrEqual },
