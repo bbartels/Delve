@@ -3,6 +3,11 @@
 Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.
 Delve automatically adds an **X-Pagination** header to the response to allow for easy navigation through the pages.
 
+Core:  
+[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.0-alpha)  
+AspNetCore Integration:  
+[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.0-alpha)
+
 ## Usage
 
 I included a demo project that shows all the capabilites of this library in the Demo/ directory.
