@@ -21,5 +21,7 @@
                 if (value > 0) { _maxPageSize = value; }
             }
         }
+
+        public bool IgnoreNullOnSerilazation { get; set; } = true;
     }
 }

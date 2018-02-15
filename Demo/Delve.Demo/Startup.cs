@@ -19,7 +19,7 @@ namespace Delve.Demo
         public void ConfigureServices(IServiceCollection services)
         {
             //Add Delve to this Mvc Project
-            services.AddMvc().AddDelve();
+            services.AddMvc().AddDelve(options => options.IgnoreNullOnSerilazation=false);
 
             const string connection = @"Server=(localdb)\mssqllocaldb;Database=DelveDemo;Trusted_Connection=True;";
             services.AddDbContext<UserManagerContext>(options => options.UseSqlServer(connection));
@@ -28,11 +28,6 @@ namespace Delve.Demo
 
             //Add the QueryValidator for User
             services.AddTransient<IQueryValidator<User>, UserQueryValidator>();
-
-            //Add IAction
-            
-
-
 
             var context = services.BuildServiceProvider().GetRequiredService<UserManagerContext>();
 
