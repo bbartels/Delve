@@ -59,7 +59,6 @@ namespace Delve.Models.Validation
             CanFilter(key, exp);
             CanSelect(key, exp);
             CanOrder(key, exp);
-            CanExpand(key, exp);
         }
 
         private void ValidateKey(string key, ValidationType type)
