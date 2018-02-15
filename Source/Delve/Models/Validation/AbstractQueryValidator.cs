@@ -55,6 +55,13 @@ namespace Delve.Models.Validation
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Expand));
         }
 
+        protected void AllowAll<TResult>(string key, Expression<Func<T, TResult>> exp)
+        {
+            CanSelect(key, exp);
+            CanOrder(key, exp);
+            CanSelect(key, exp);
+        }
+
         private void ValidateKey(string key, ValidationType type)
         {
             if (!_validationRules.ContainsKey(key))
