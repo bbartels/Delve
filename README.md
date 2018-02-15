@@ -120,7 +120,8 @@ This way you can check for a user called "John" or "Mary" (i.e. **filter=Name==J
 |----------|----------------
 |   `==`   | Equal       
 |   `==*`  | CaseInsensitive Equal
-|   `!=`   | NotEqual  
+|   `!=`   | NotEqual
+|   `!=*`  | CaseInsensitive NotEqual
 |   `>`    | GreaterThan
 |   `<`    | LessThan
 |   `>=`   | GreaterThanOrEqual
