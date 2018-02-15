@@ -37,9 +37,11 @@ namespace Delve.Models.Expressions
             foreach (var subQuery in query.Split(','))
             {
                 var key = QuerySanitizer.GetKey(type, subQuery);
+                
+                var trimmedSubQuery = subQuery.Trim();
 
                 var expressionType = validator.GetResultType(key, type);
-                expressions.Add((IExpression<TEntity>)MakeGenericType<TEntity>(typeMap[type], expressionType, subQuery));
+                expressions.Add((IExpression<TEntity>)MakeGenericType<TEntity>(typeMap[type], expressionType, trimmedSubQuery));
             }
 
             return expressions;
