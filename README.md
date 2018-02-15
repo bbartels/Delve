@@ -64,8 +64,7 @@ public class UserQueryValidator : AbstractQueryValidator<User>
 ```
 
 ### 3. Configure your Controller
-By simply adding a **IResourceParameter<TDomain>** to the method signature Delve will automatically parse and validate the client request.
-If the validation does not succeed Delve will return a BadRequest with an error message.
+By simply adding a **IResourceParameter<TDomain>** to the method signature Delve will automatically parse and validate the client request and upon an invalid request return a 400 BadRequest with a matching error message.
 
 ```csharp
 using Delve.Models;
@@ -118,23 +117,31 @@ This way you can check for a user called "John" or "Mary" (i.e. **filter=Name==J
 ### FilterOperators
 
 | Operator | Interpretation                  
-|----------|------------
-|   `==`   | Equal                 
+|----------|----------------
+|   `==`   | Equal       
 |   `==*`  | CaseInsensitive Equal
-|   `!=`   | NotEqual             
-|   `>`    | GreaterThan         
-|   `<`    | LessThan              
+|   `!=`   | NotEqual  
+|   `>`    | GreaterThan
+|   `<`    | LessThan
 |   `>=`   | GreaterThanOrEqual
-|   `<=`   | LessThanOrEqual    
-|   `?`    | Contains          
-|   `?*`   | CaseInsensitive Contains              
-|   `^`    | StartsWith 
-|   `^*`   | CaseInsensitive StartsWith 
-|   `$`    | EndsWith 
+|   `<=`   | LessThanOrEqual
+|   `?`    | Contains
+|   `?*`   | CaseInsensitive Contains       
+|   `^`    | StartsWith
+|   `^*`   | CaseInsensitive StartsWith
+|   `$`    | EndsWith
 |   `$*`   | CaseInsensitive EndsWith
 
+#### Sorting
 
-Request Example:
+Just as Filtering, Sorting is delimited by commas, though unlike with Filtering order of the sorts matter.
+Meaning, if you have **(orderby=Name, -Age)** in your query, it will first order by Name ascending and then by Age descending (**Linq equivalent: .OrderBy(x => x.Name).ThenByDescending(x => x.Age);.**
+
+#### Selecting
+
+If your entity has numerous columns and as a consumer of the API you are only really interested in a couple of things you can save bandwith by using Select. Just like before selects are delimited by commas and allow you to select on any virtual property defined in the **QueryValidator**.
+
+##### Request Example:
 ```
 GET /api/Users
 ?filter=        Age>=20, Name$*Smith|Bullock
@@ -145,7 +152,7 @@ GET /api/Users
 &pageSize=      10
 ```
 
-X-Pagination Response Header:
+##### X-Pagination Response Header:
 ```
 {   
     "currentPage":1,
@@ -158,6 +165,13 @@ X-Pagination Response Header:
                                         &filter=Age>=20,Name$*Smith|Bullock
                                         &orderby=-Age,Name
                                         &select=Id,Name,Age
-                                        &expand=UserRoles&"
+                                        &expand=UserRoles"
 }
 ```
+
+## Licensing
+Delve is licensed under MIT.
+
+## Contribution
+This project is still at an early stage in development so any contributions are welcomed!
+Even if it is just a suggestions/discussions about how to improve upon Delve!
