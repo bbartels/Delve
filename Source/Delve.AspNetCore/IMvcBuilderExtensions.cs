@@ -31,6 +31,7 @@ namespace Delve.AspNetCore
             //Ignores CiruclarReference checking in json.net
             mvcBuilder.AddJsonOptions(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                opt.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             });
 
             return mvcBuilder;
