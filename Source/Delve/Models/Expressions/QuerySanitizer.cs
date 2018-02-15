@@ -58,6 +58,11 @@ namespace Delve.Models.Expressions
         {
             return GetOperands(query).o2.Split('|').Select(property => property.Trim()).ToArray();
         }
+        
+        public static string[] GetExpandValues(string query)
+        {
+            return query.Split('>').Select(property => property.Trim()).ToArray();
+        }
 
         public static string GetFilterSymbol(QueryOperator op)
         {

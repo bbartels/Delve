@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Delve.Models.Validation;
+
 namespace Delve.Demo.Models
 {
     public class User
@@ -23,7 +25,7 @@ namespace Delve.Demo.Models
         }
     }
 
-    public class UserQueryValidator : Delve.Models.Validation.AbstractQueryValidator<User>
+    public class UserQueryValidator : AbstractQueryValidator<User>
     {
         public UserQueryValidator()
         {

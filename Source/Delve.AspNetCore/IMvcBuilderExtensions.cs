@@ -16,14 +16,21 @@ namespace Delve.AspNetCore
             options?.Invoke(option);
             ResourceParameterOptions.ApplyConfig(option);
 
+            //Adds UrlHelper services to mvc app
             mvcBuilder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             mvcBuilder.Services.AddScoped<IUrlHelper, UrlHelper>(factory => 
                             new UrlHelper(factory.GetService<IActionContextAccessor>().ActionContext));
 
+            //Adds IResourceParameter<T> ModelBinding and ModelState validator
             mvcBuilder.AddMvcOptions(opt =>
             {
                 opt.ModelBinderProviders.Insert(0, new ResourceParamBinderProvider());
                 opt.Filters.Add(new ModelStateValidator());
+            });
+
+            //Ignores CiruclarReference checking in json.net
+            mvcBuilder.AddJsonOptions(opt => {
+                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
             return mvcBuilder;
