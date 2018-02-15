@@ -35,8 +35,8 @@ namespace Delve.AspNetCore
                 pageSize = result.PageSize,
                 totalPages = result.TotalPages,
                 totalCount = result.TotalCount,
-                previousPageLink = prevPage,
-                nextPageLink = nextPage
+                previousPageLink = PercentEncodeReplace.Replace(prevPage),
+                nextPageLink = PercentEncodeReplace.Replace(nextPage)
             };
             
             controller.Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(metaData));

@@ -8,7 +8,7 @@ namespace Delve.Models.Expressions
     {
         public bool Descending { get; }
 
-        public override string Query { get { return $"{(Descending ? "-" : "+")}{Key}"; } }
+        public override string Query { get { return $"{(Descending ? "-" : "")}{Key}"; } }
 
         public OrderByExpression(string orderBy)
         {
