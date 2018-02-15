@@ -38,7 +38,6 @@ namespace Delve.Demo
 
             if (context.Database.EnsureCreated())
             {
-                context.Database.Migrate();
                 context.EnsureSeeded();
             }
 
