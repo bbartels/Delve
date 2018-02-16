@@ -70,5 +70,11 @@ namespace Delve.Tests
         {
             _validator.AllowAllTest("RoleId", u => u.UserRoles.Select(x => x.RoleId));
         }
+
+        [TestMethod]
+        public void CanExpand_ValidExpression_Succeeds()
+        {
+            _validator.CanExpandTest(u => u.UserRoles.Select(x => x.Role.UserRoles.Select(y => y.Role)));
+        }
     }
 }

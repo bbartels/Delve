@@ -149,7 +149,14 @@ namespace Delve.Models.Validation
             foreach(var str in split)
             {
 	           if(!str.Contains('.')) { continue; }
-	           properties.Add(str.Split('.')[1].Trim(')').Trim('('));
+                var propSplit = str.Split('.');
+                for(int i = 1; i < propSplit.Length; i++)
+                {
+                     if (!propSplit[i].StartsWith("Select"))
+                     {
+                          properties.Add(propSplit[i].Trim(')').Trim('('));
+                     }
+                }
             }
 
             return properties.Aggregate((x, y) => x + '.' + y);

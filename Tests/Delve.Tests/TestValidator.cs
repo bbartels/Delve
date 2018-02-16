@@ -23,7 +23,7 @@ namespace Delve.Tests
             CanOrder(key, exp);
         }
 
-        public void CanExpandTest<T>(string key, Expression<Func<User, T>> exp) where T : class
+        public void CanExpandTest<T>(Expression<Func<User, T>> exp) where T : class
         {
             CanExpand(exp);
         }
