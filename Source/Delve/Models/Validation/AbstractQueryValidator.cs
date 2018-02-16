@@ -94,31 +94,18 @@ namespace Delve.Models.Validation
         {
             switch (valType)
             {
-                case ValidationType.Select:
-                {
-                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type) 
-                                          && !typeof(IEnumerable).IsAssignableFrom(type))
-                    {
-                        throw new InvalidValidationBuilderException($"Registered property ({key})" +
-                                                                    $" can not be of type {type}.");
-                    }
-                } break;
-                case ValidationType.OrderBy:
-                {
-                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type))
-                    {
-                        throw new InvalidValidationBuilderException
-                            ($"Registered property: {key} can not be of type {type}.");
-                    };
-                } break;
+                case ValidationType.Select: { } break;
+                case ValidationType.OrderBy: { } break;
+
                 case ValidationType.Filter:
                 {
-                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type))
+                    if (!type.IsPrimitive && !_validNonPrimitive.Contains(type) && !typeof(IEnumerable).IsAssignableFrom(type))
                     {
                         throw new InvalidValidationBuilderException
-                            ($"Registered property: {key} can not be of type {type}.");
+                            ($"Registered filter property: {key} can not be of type {type}.");
                     };
                 } break;
+
                 case ValidationType.Expand:
                 {
                     if (type.IsValueType)
@@ -127,6 +114,7 @@ namespace Delve.Models.Validation
                             ($"Registered property: {key} can not be of type: {type}. Expand is limited to classes.");
                     }
                 } break;
+
                 default:
                 {
                     throw new ArgumentOutOfRangeException(nameof(valType), valType, null);
