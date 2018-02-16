@@ -57,22 +57,22 @@ public class UserQueryValidator : AbstractQueryValidator<User>
 {
     public UserQueryValidator()
     {
-        //Adds selecting/filtering/ordering with key="Id" for Id property
-        AddSelect("Id", x => x.Id);
-        AddFilter("Id", x => x.Id);
-        AddOrder("Id", x => x.Id);
+        //Adds selecting/filtering/sorting with key="Id" for Id property
+        CanSelect("Id", x => x.Id);
+        CanFilter("Id", x => x.Id);
+        CanOrder("Id", x => x.Id);
         
         //Adds a virtual property for the Age of the user calculated using the DateOfBirth
-        //By using AllowAll() you can automatically add filtering/sorting and selecting for a property
+        //By using AllowAll() you can automatically add selecting/filtering/sorting for a property
         AllowAll("Age", x => Math.Round((DateTime.Now - x.DateOfBirth).TotalDays / 365, 2));
         
-        //Adds a virtual property with key="Name" for the combination of Last- and FirstName
+        //Adds a virtual property with key="Name" for the combination of LastName and FirstName
         AllowAll("Name", x => x.LastName + "" + x.FirstName);
         
         //Allows you to use "Include" in ORM's like EFCore
         //For now this is an experimental feature since it does not allow a **.ThenInclude()** yet
         //So be careful when using this, it can lead to bad performance (i.e. UserRoles is a big table)
-        Expand("UserRoles", x => x.UserRoles);
+        CanExpand("UserRoles", x => x.UserRoles);
     }
 }
 ```
