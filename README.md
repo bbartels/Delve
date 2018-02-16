@@ -3,9 +3,9 @@
 Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.  
 
 Core:  
-[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.1-alpha)  
+[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.2-alpha)  
 AspNetCore Integration:  
-[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.1-alpha)
+[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.2-alpha)
 
 ## Features  
 * Pagination, Sorting, Filtering, Selecting and Expanding (i.e. EFCore Include) capabilities.
@@ -13,11 +13,11 @@ AspNetCore Integration:
 * Auto-Generation of X-Pagination header
 * Automatically returns a 400 Bad Request on malformed query
 * Virtual Properties allow for extending API functionality without cluttering domain classes
-* Not ORM dependent (Any ORM that uses IQueryable should work)
-* Async pagination supported
+* Not ORM dependant (Any ORM that uses IQueryable should work)
+* Async pagination is supported
 
 ## Demo  
-There is a Demo Project in the Demo/ directory, which demonstrated all of Delve's functionality.
+There is a Demo Project in the Demo/ directory, which demonstrates all of Delve's functionality.
 
 ## Usage
 
@@ -70,9 +70,10 @@ public class UserQueryValidator : AbstractQueryValidator<User>
         AllowAll("Name", x => x.LastName + "" + x.FirstName);
         
         //Allows you to use "Include" in ORM's like EFCore
-        //For now this is an experimental feature since it does not allow a **.ThenInclude()** yet
-        //So be careful when using this, it can lead to bad performance (i.e. UserRoles is a big table)
-        CanExpand("UserRoles", x => x.UserRoles);
+        //Expanding syntax is EF6 like. Branch into an IEnumerable navigation-property with a .Select().
+        //All previous navigation-properties are automatically included. (in this case: both UserRoles and UserRoles.Role)
+        //No need to do another CanExpand for the standalone UserRoles
+        CanExpand(x => x.UserRoles.Select(ur => ur.Role);
     }
 }
 ```
@@ -161,7 +162,13 @@ Just like before selects are delimited by commas and allow you to select on any 
 
 If your Entity references another relation you can include that relation using the **expand** keyword.  
 This will allow you to perform further operations on navigation properties.  
-Note: ThenInclude is currently not supported
+
+Example for the query validation definition:  
+```csharp
+CanExpand(x => x.UserRoles.Select(ur => ur.Role);
+```  
+This will add a way to allow to include both **UserRoles** and **UserRoles.Role** in your query.
+Note: CanExpand does not require a key, it will automatically take the name of the properties as the individual keys and separate each layer of depth by a '.'.
 
 ##### Request Example:  
 ```
