@@ -1,16 +1,25 @@
 # Delve
 
-Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.
-Delve automatically adds an **X-Pagination** header to the response to allow for easy navigation through the pages.
+Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.  
 
 Core:  
-[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.0-alpha)  
+[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.1-alpha)  
 AspNetCore Integration:  
-[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.0-alpha)
+[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.1-alpha)
+
+## Features  
+* Pagination, Sorting, Filtering, Selecting and Expanding (i.e. EFCore Include) capabilities.
+* Easy ASP.Net Core Mvc integration
+* Auto-Generation of X-Pagination header
+* Automatically returns a 400 Bad Request on malformed query
+* Virtual Properties allow for extending API functionality without cluttering domain classes
+* Not ORM dependent (Any ORM that uses IQueryable should work)
+* Async pagination supported
+
+## Demo  
+There is a Demo Project in the Demo/ directory, which demonstrated all of Delve's functionality.
 
 ## Usage
-
-I included a demo project that shows all the capabilites of this library in the Demo/ directory.
 
 ### 1. Add Delve to the MVC Project
 Just append **.AddDelve()** to your **.AddMvc()** call in your **Startup.cs** file.
@@ -28,7 +37,7 @@ services.AddMvc().AddDelve(options => options.MaxPageSize = 15);
 ```
 
 ### 2. Add a QueryValidator to your Domain class
-By deriving from **AbstractQueryValidator<TDomain>** you can precisely define what is allowed to by queried by the user.
+By deriving from **AbstractQueryValidator\<TDomain>** you can precisely define what is allowed to by queried by the user.  
 By adding virtual properties you do not have to create a new property for something you only want to expose to the API (See examples below).
 
 ```csharp
@@ -48,28 +57,28 @@ public class UserQueryValidator : AbstractQueryValidator<User>
 {
     public UserQueryValidator()
     {
-        //Adds selecting/filtering/ordering with key="Id" for Id property
-        AddSelect("Id", x => x.Id);
-        AddFilter("Id", x => x.Id);
-        AddOrder("Id", x => x.Id);
+        //Adds selecting/filtering/sorting with key="Id" for Id property
+        CanSelect("Id", x => x.Id);
+        CanFilter("Id", x => x.Id);
+        CanOrder("Id", x => x.Id);
         
         //Adds a virtual property for the Age of the user calculated using the DateOfBirth
-        //By using AllowAll() you can automatically add filtering/sorting and selecting for a property
+        //By using AllowAll() you can automatically add selecting/filtering/sorting for a property
         AllowAll("Age", x => Math.Round((DateTime.Now - x.DateOfBirth).TotalDays / 365, 2));
         
-        //Adds a virtual property with key="Name" for the combination of Last- and FirstName
+        //Adds a virtual property with key="Name" for the combination of LastName and FirstName
         AllowAll("Name", x => x.LastName + "" + x.FirstName);
         
         //Allows you to use "Include" in ORM's like EFCore
         //For now this is an experimental feature since it does not allow a **.ThenInclude()** yet
         //So be careful when using this, it can lead to bad performance (i.e. UserRoles is a big table)
-        Expand("UserRoles", x => x.UserRoles);
+        CanExpand("UserRoles", x => x.UserRoles);
     }
 }
 ```
 
 ### 3. Configure your Controller
-By simply adding a **IResourceParameter<TDomain>** to the method signature Delve will automatically parse and validate the client request and upon an invalid request return a 400 BadRequest with a matching error message.
+By simply adding a **IResourceParameter\<TDomain>** to the method signature Delve will automatically parse and validate the client request and upon an invalid request return a 400 BadRequest with a matching error message.
 
 ```csharp
 using Delve.Models;
@@ -112,42 +121,49 @@ public class UserController : Controller
 
 ### 4. Send a request
 
-#### Filters: 
-There are a couple of ways you can work with Delve's filters.
-By adding **filter=** to the query string you can filter on any in the QueryValidator defined virtual properties.
-You can add mulitple filters by separating these with commas (i.e. **filter=Id== 5, Name==John**).
-Furthermore you can define logical OR behaviour by separating the values of one filter with a '|' operator.
-This way you can check for a user called "John" or "Mary" (i.e. **filter=Name==John|Mary**).
+### Filters: 
+There are a couple of ways you can work with Delve's filters.  
+By adding **filter=** to the query string you can filter on any in the QueryValidator defined virtual properties.  
+You can add mulitple filters by separating these with commas (i.e. **filter=Id== 5, Name==John**).  
+Furthermore you can define logical OR behaviour by separating the values of one filter with a '|' operator.  
+This way you can check for a user called "John" or "Mary" (i.e. **filter=Name==John|Mary**).  
 
 ### FilterOperators
 
-| Operator | Interpretation                  
-|----------|----------------
-|   `==`   | Equal       
-|   `==*`  | CaseInsensitive Equal
-|   `!=`   | NotEqual
-|   `!=*`  | CaseInsensitive NotEqual
-|   `>`    | GreaterThan
-|   `<`    | LessThan
-|   `>=`   | GreaterThanOrEqual
-|   `<=`   | LessThanOrEqual
-|   `?`    | Contains
-|   `?*`   | CaseInsensitive Contains       
-|   `^`    | StartsWith
-|   `^*`   | CaseInsensitive StartsWith
-|   `$`    | EndsWith
-|   `$*`   | CaseInsensitive EndsWith
+| Operator |        Interpretation       | Allowed Type      
+|----------|-----------------------------|--------------
+|   `==`   | Equal                       | object
+|   `==*`  | CaseInsensitive Equal       | string
+|   `!=`   | NotEqual                    | object
+|   `!=*`  | CaseInsensitive NotEqual    | string
+|   `>`    | GreaterThan                 | IComparable
+|   `<`    | LessThan                    | IComparable
+|   `>=`   | GreaterThanOrEqual          | IComparable
+|   `<=`   | LessThanOrEqual             | IComparable
+|   `?`    | Contains                    | string
+|   `?*`   | CaseInsensitive Contains    | string
+|   `^`    | StartsWith                  | string
+|   `^*`   | CaseInsensitive StartsWith  | string
+|   `$`    | EndsWith                    | string
+|   `$*`   | CaseInsensitive EndsWith    | string
 
-#### Sorting
+### Sorting
 
-Just as Filtering, Sorting is delimited by commas, though unlike with Filtering order of the sorts matter.
-Meaning, if you have **(orderby=Name, -Age)** in your query, it will first order by Name ascending and then by Age descending (**Linq equivalent: .OrderBy(x => x.Name).ThenByDescending(x => x.Age);.**
+Just as Filtering, Sorting is delimited by commas, though unlike with Filtering order of the sorts matter.  
+Meaning, if you have **"(orderby=Name, -Age)"** in your query, it will first order by Name ascending and then by Age descending **(Linq equivalent: .OrderBy(x => x.Name).ThenByDescending(x => x.Age);)**.
 
-#### Selecting
+### Selecting
 
-If your entity has numerous columns and as a consumer of the API you are only really interested in a couple of things you can save bandwith by using Select. Just like before selects are delimited by commas and allow you to select on any virtual property defined in the **QueryValidator**.
+If your entity has numerous columns and as a consumer of the API you are only really interested in a couple of things you can save bandwith by using Select.  
+Just like before selects are delimited by commas and allow you to select on any virtual property defined in the **QueryValidator**.
 
-##### Request Example:
+### Expanding
+
+If your Entity references another relation you can include that relation using the **expand** keyword.  
+This will allow you to perform further operations on navigation properties.  
+Note: ThenInclude is currently not supported
+
+##### Request Example:  
 ```
 GET /api/Users
 ?filter=        Age>=20, Name$*Smith|Bullock
@@ -158,7 +174,7 @@ GET /api/Users
 &pageSize=      10
 ```
 
-##### X-Pagination Response Header:
+##### X-Pagination Response Header:  
 ```
 {   
     "currentPage":1,
