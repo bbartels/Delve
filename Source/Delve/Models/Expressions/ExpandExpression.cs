@@ -16,7 +16,7 @@ namespace Delve.Models.Expressions
 
         public override IQueryable<T> ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
         {
-            return include != null ? include(source, GetPropertyName()) : source;
+            return include != null ? include(source, Key) : source;
         }
     }
 }

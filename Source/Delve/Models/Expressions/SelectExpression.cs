@@ -15,7 +15,7 @@ namespace Delve.Models.Expressions
         {
             try
             {
-                return (t) => (Key, Property.Compile()(t));
+                return t => (Key, Property.Compile()(t));
             }
 
             catch (ArgumentNullException)

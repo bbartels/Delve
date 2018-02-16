@@ -18,9 +18,9 @@ namespace Delve.Models.Validation
         {
             ValidatorHelpers.CheckTypeValid(typeof(TResult), rule.ValidationType, key);
 
-            if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_]+$"))
+            if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_.]+$"))
             {
-                throw new InvalidValidationBuilderException("Key must only contain numbers, letters and underscores.");
+                throw new InvalidValidationBuilderException("Key must only contain numbers, letters, dots and underscores.");
             }
 
             if (!_validationRules.ContainsKey(key))
@@ -49,9 +49,10 @@ namespace Delve.Models.Validation
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.OrderBy));
         }
 
-        protected void CanExpand<TResult>(string key, Expression<Func<T, TResult>> exp) where TResult : class
+        protected void CanExpand<TResult>(Expression<Func<T, TResult>> exp) where TResult : class
         {
-            AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Expand));
+            AddRule<TResult>(ValidatorHelpers.GetExpandString(exp.ToString()), 
+                                            new ValidationRule<T, TResult>(exp, ValidationType.Expand));
         }
 
         protected void AllowAll<TResult>(string key, Expression<Func<T, TResult>> exp)
@@ -63,23 +64,40 @@ namespace Delve.Models.Validation
 
         private void ValidateKey(string key, ValidationType type)
         {
-            if (!_validationRules.ContainsKey(key))
+            if (type != ValidationType.Expand)
             {
-                throw new InvalidQueryException($"Invalid {type} " +
-                                            $"propertykey: {key} in query.");
+                if (!_validationRules.ContainsKey(key))
+                {
+                    throw new InvalidQueryException($"Invalid {type} " +
+                                                    $"propertykey: {key} in query.");
+                }
+            }
+
+            else
+            {
+                if (GetExpandKey(key) == null) { throw new InvalidQueryException($"Key {key} is not defined."); }
             }
         }
 
         IValidationRule IInternalQueryValidator<T>.ValidateExpression(IExpression expression, ValidationType type)
         {
             ValidateKey(expression.Key, type);
-            return _validationRules[expression.Key].ValidateExpression(type, expression);
+            return _validationRules[type == ValidationType.Expand ? GetExpandKey(expression.Key) : expression.Key]
+                                   .ValidateExpression(type, expression);
         }
 
         Type IInternalQueryValidator<T>.GetResultType(string key, ValidationType type)
         {
             ValidateKey(key, type);
-            return _validationRules[key].GetResultType(type, key);
+            return _validationRules[type == ValidationType.Expand ? GetExpandKey(key) : key].GetResultType(type, key);
+        }
+
+        private string GetExpandKey(string key)
+        {
+            if (key.EndsWith(".")) { return null; }
+            return _validationRules
+                .Where(pair => pair.Key.IndexOf(key, StringComparison.CurrentCultureIgnoreCase) == 0).Select(x => x.Key)
+                .FirstOrDefault();
         }
     }
 
@@ -122,13 +140,19 @@ namespace Delve.Models.Validation
             }
         }
 
-        public static string CheckExpressionIsProperty<T, TResult>(Expression<Func<T, TResult>> expression)
+        public static string GetExpandString(string expression)
         {
-            if (expression.Body is MemberExpression member)
+            var split = expression.Split(new[] { "=>" }, StringSplitOptions.None).ToList();
+
+            var properties = new List<string>();
+
+            foreach(var str in split)
             {
-                return member.Member.Name;
+	           if(!str.Contains('.')) { continue; }
+	           properties.Add(str.Split('.')[1].Trim(')').Trim('('));
             }
-            throw new ArgumentException($"Lambda expression: {expression.Body} does not refer to a property.");
+
+            return properties.Aggregate((x, y) => x + '.' + y);
         }
     }
 }

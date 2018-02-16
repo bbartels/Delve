@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Delve.AspNetCore
 {
@@ -17,7 +15,7 @@ namespace Delve.AspNetCore
             { "%3D", "=" },
             { "%3E", ">" },
             { "%3F", "?" },
-            { "%5E", "^" },
+            { "%5E", "^" }
         };
 
         public static string Replace(string url)

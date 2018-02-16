@@ -19,7 +19,7 @@ namespace Delve.Demo
         public void ConfigureServices(IServiceCollection services)
         {
             //Add Delve to this Mvc Project
-            services.AddMvc().AddDelve(options => options.IgnoreNullOnSerilazation=false);
+            services.AddMvc().AddDelve(options => options.IgnoreNullOnSerilazation = false);
 
             const string connection = @"Server=(localdb)\mssqllocaldb;Database=DelveDemo;Trusted_Connection=True;";
             services.AddDbContext<UserManagerContext>(options => options.UseSqlServer(connection));
@@ -77,7 +77,7 @@ namespace Delve.Demo
                     new User("Sharise", "Garrard", DateTime.Parse("18/06/1978 02:31:40")),
                     new User("Krysten", "Cannon", DateTime.Parse("04/02/1980 12:11:40")),
                     new User("Fulke", "Bullock", DateTime.Parse("02/03/2006 09:53:20")),
-                    new User("Brand", "Chambers", DateTime.Parse("22/10/1992 18:51:40")),
+                    new User("Brand", "Chambers", DateTime.Parse("22/10/1992 18:51:40"))
                 };
                 context.Users.AddRange(users);
                 context.SaveChanges();

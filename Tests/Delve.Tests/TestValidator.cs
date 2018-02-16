@@ -25,7 +25,7 @@ namespace Delve.Tests
 
         public void CanExpandTest<T>(string key, Expression<Func<User, T>> exp) where T : class
         {
-            CanExpand(key, exp);
+            CanExpand(exp);
         }
 
         public void AllowAllTest<T>(string key, Expression<Func<User, T>> exp)

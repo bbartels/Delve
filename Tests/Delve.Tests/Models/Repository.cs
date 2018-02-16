@@ -32,7 +32,7 @@ namespace Delve.Tests.Models
                 new User(17, "Sharise", "Garrard", DateTime.Parse("18/06/1978 02:31:40")),
                 new User(18, "Krysten", "Cannon", DateTime.Parse("04/02/1980 12:11:40")),
                 new User(19, "Fulke", "Bullock", DateTime.Parse("02/03/2006 09:53:20")),
-                new User(20, "Brand", "Chambers", DateTime.Parse("22/10/1992 18:51:40")),
+                new User(20, "Brand", "Chambers", DateTime.Parse("22/10/1992 18:51:40"))
             };
 
             var roles = new List<Role>

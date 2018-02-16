@@ -19,10 +19,6 @@ namespace Delve.Models.Validation
         public ValidationRule(Expression<Func<T, TResult>> exp, ValidationType type)
         {
             Expression = exp;
-            if (type == ValidationType.Expand)
-            {
-                ValidatorHelpers.CheckExpressionIsProperty(exp);
-            }
             ValidationType = type;
         }
 

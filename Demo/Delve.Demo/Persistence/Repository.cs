@@ -120,10 +120,8 @@ namespace Delve.Demo.Persistence
 
             if (predicate != null) { query = query.Where(predicate); }
 
-            foreach(var include in includes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(include);
-            }
+            query = includes.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Aggregate(query, (current, include) => current.Include(include));
 
             if (orderBy != null) { query = orderBy(query); }
 

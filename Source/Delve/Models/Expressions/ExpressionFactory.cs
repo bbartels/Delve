@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Delve.Models.Expressions
 {
@@ -22,7 +19,7 @@ namespace Delve.Models.Expressions
             (typeof(string), (x, y) => ((string)(object)y).StartsWith((string)(object)x, StringComparison.Ordinal)),
             (typeof(string), (x, y) => ((string)(object)y).StartsWith((string)(object)x, StringComparison.OrdinalIgnoreCase)),
             (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.Ordinal)),
-            (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.OrdinalIgnoreCase)),
+            (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.OrdinalIgnoreCase))
             //(typeof(IEnumerable<TResult>), (x, y) => ((IEnumerable<TResult>)y).Contains(x))
         };
 

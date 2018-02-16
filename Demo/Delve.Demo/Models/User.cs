@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Security.Cryptography.X509Certificates;
 using Delve.Models.Validation;
 
 namespace Delve.Demo.Models
@@ -50,7 +50,7 @@ namespace Delve.Demo.Models
 
             //Allows clients to expand on UserRoles (EF Core Include)
             //WARNING: Can lead to bad performance if used incorrectly.
-            CanExpand("UserRoles", x => x.UserRoles);
+            CanExpand(x => x.UserRoles.Select(y => y.Role));
         }
     }
 }
