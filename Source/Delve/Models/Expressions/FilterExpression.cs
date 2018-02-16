@@ -31,7 +31,7 @@ namespace Delve.Models.Expressions
             this.ValidatePropertyType(Key, StringValues);
 
             Values = StringValues.Select(x => (TResult)Convert.ChangeType(x, typeof(TResult))).ToArray();
-            OperationExpression = ExpressionFactory<TResult>.RequestFunc(Operator);
+            OperationExpression = ExpressionFactory<TResult>.RequestFunc(Operator, typeof(TResult));
         }
 
         public override IQueryable<T> ApplyFilter(IQueryable<T> source)

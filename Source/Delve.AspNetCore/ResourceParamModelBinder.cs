@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -63,7 +64,8 @@ namespace Delve.AspNetCore
 
                 if (bindingContext.HttpContext.RequestServices.GetService(validatorType) is IQueryValidator validator)
                 {
-                    param.ApplyParameters(validator, coll[attributes[2]], coll[attributes[3]], coll[attributes[4]], coll[attributes[5]]);
+                    param.ApplyParameters(validator, coll[attributes[2]], coll[attributes[3]], coll[attributes[4]],
+                        coll[attributes[5]]);
                 }
 
                 else
@@ -71,6 +73,13 @@ namespace Delve.AspNetCore
                     throw new RuntimeException($"No service registered for QueryValidator: {validatorType}.");
                 }
             }
+            catch (TargetInvocationException e)
+            {
+                bindingContext.ModelState.AddModelError("InvalidQueryString", e.InnerException.Message);
+                bindingContext.Result = ModelBindingResult.Failed();
+                return Task.CompletedTask;
+            }
+
             catch (InvalidQueryException e)
             {
                 bindingContext.ModelState.AddModelError("InvalidQueryString", e.Message);
