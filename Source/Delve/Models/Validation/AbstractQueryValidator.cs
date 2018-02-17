@@ -14,6 +14,8 @@ namespace Delve.Models.Validation
         private readonly IDictionary<string, ValidationRules> _validationRules = 
                 new Dictionary<string, ValidationRules>(StringComparer.CurrentCultureIgnoreCase);
 
+        private readonly IQueryConfiguration<T> _defaultConfig = new QueryConfiguration<T>();
+
         private void AddRule<TResult>(string key, IValidationRule rule)
         {
             ValidatorHelpers.CheckTypeValid(typeof(TResult), rule.ValidationType, key);
@@ -32,6 +34,21 @@ namespace Delve.Models.Validation
             {
                 _validationRules[key].AddRule(rule);
             }
+        }
+
+        protected void AddDefaultFilter(Expression<Func<T, bool>> expression)
+        {
+            _defaultConfig.AddDefaultFilter(expression);
+        }
+
+        protected void AddDefaultSort<TResult>(Expression<Func<T, TResult>> exp, bool descending)
+        {
+            _defaultConfig.AddDefaultSort(exp, descending);
+        }
+
+        protected void AddDefaultSelect<TResult>(string key, Expression<Func<T, TResult>> exp)
+        {
+            _defaultConfig.AddDefaultSelect(key, exp);
         }
 
         protected void CanFilter<TResult>(string key, Expression<Func<T, TResult>> exp)
@@ -90,6 +107,11 @@ namespace Delve.Models.Validation
         {
             ValidateKey(key, type);
             return _validationRules[type == ValidationType.Expand ? GetExpandKey(key) : key].GetResultType(type, key);
+        }
+
+        IQueryConfiguration<T> IInternalQueryValidator<T>.GetConfiguration()
+        {
+            return _defaultConfig;
         }
 
         private string GetExpandKey(string key)

@@ -9,7 +9,7 @@ namespace Delve.Tests
     [TestClass]
     internal class PagedResultTests
     {
-        private IPagedResult<Models.User> _pagedUsers;
+        private IPagedResult<User> _pagedUsers;
         private ResourceParameter<User> _param;
         private IList<User> _users;
 

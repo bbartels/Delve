@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Delve.Models.Validation;
 
 namespace Delve.Demo.Models
@@ -29,6 +28,12 @@ namespace Delve.Demo.Models
     {
         public UserQueryValidator()
         {
+            //Adds Id and virtual property "Name" as default selects
+            AddDefaultSelect("Id", u => u.Id);
+            AddDefaultSelect("Name", u => u.LastName + " " + u.FirstName);
+            //Adds virtual property as default sort
+            AddDefaultSort(u => u.LastName + " " + u.LastName, true);
+
             //Allows clients to select Id
             CanSelect("Id", x => x.Id);
 

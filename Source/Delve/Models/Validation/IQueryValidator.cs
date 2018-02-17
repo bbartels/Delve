@@ -8,6 +8,7 @@ namespace Delve.Models.Validation
     {
         IValidationRule ValidateExpression(IExpression expression, ValidationType type);
         Type GetResultType(string key, ValidationType type);
+        IQueryConfiguration<T> GetConfiguration();
     }
 
     public interface IQueryValidator { }
