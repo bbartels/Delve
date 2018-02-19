@@ -3,14 +3,15 @@
 Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.  
 
 Core:  
-[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.2-alpha)  
+[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.3-alpha)  
 AspNetCore Integration:  
-[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.2-alpha)
+[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.3-alpha)
 
 ## Features  
 * Pagination, Sorting, Filtering, Selecting and Expanding (i.e. EFCore Include) capabilities.
 * Easy ASP.Net Core Mvc integration
 * Auto-Generation of X-Pagination header
+* Optional default definitions for filtering, sorting and selecting
 * Automatically returns a 400 Bad Request on malformed query
 * Virtual Properties allow for extending API functionality without cluttering domain classes
 * Not ORM dependant (Any ORM that uses IQueryable should work)
@@ -57,6 +58,15 @@ public class UserQueryValidator : AbstractQueryValidator<User>
 {
     public UserQueryValidator()
     {
+        //Adds Id and virtual property "Name" as default selects
+        AddDefaultSelect("Id", u => u.Id);
+        AddDefaultSelect("Name", u => u.LastName + " " + u.FirstName);
+        
+        //Adds virtual property as default sort
+        AddDefaultSort(u => u.LastName + " " + u.LastName, true);
+        //Adds default filter
+        AddDefaultFilter(u => u.Id > 5);
+        
         //Adds selecting/filtering/sorting with key="Id" for Id property
         CanSelect("Id", x => x.Id);
         CanFilter("Id", x => x.Id);
