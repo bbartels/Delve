@@ -72,6 +72,11 @@ namespace Delve.Models.Expressions
 
         public static QueryOperator GetFilterOperator(string query)
         {
+            if (query == string.Empty)
+            {
+                throw new InvalidQueryException("Please specify a key for the filter operation.");
+            }
+
             foreach (var op in _operatorMaps.Reverse())
             {
                 if (query.Contains(op.Key))
@@ -79,7 +84,7 @@ namespace Delve.Models.Expressions
                     return op.Value;
                 }
             }
-            throw new InvalidQueryException($"{query} does not contain a valid {nameof(QueryOperator)}.");
+            throw new InvalidQueryException($"\"{query}\" does not contain a valid {nameof(QueryOperator)}.");
         }
 
         private static (string o1, string o2) GetOperands(string str)
@@ -102,7 +107,7 @@ namespace Delve.Models.Expressions
                     throw new InvalidQueryException("Unknown filter operator '='. Did you mean '=='?");
                 }
 
-                throw new InvalidQueryException($"{str} does not contain a valid {nameof(QueryOperator)}.");
+                throw new InvalidQueryException($"\"{str}\" does not contain a valid {nameof(QueryOperator)}.");
             }
 
             return operands;
