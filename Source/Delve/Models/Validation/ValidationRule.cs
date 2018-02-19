@@ -24,11 +24,10 @@ namespace Delve.Models.Validation
 
         public IValidationRule ValidateExpression(IExpression exp)
         {
-            if (exp.PropertyType != Expression.ReturnType)
-            {
-                throw new InvalidQueryException($"Values of {exp.Key} do not match Type: {Expression.ReturnType}.");
-            }
-            return this;
+            if (exp.PropertyType == Expression.ReturnType) { return this; }
+
+            throw new InvalidQueryException($"Values of key: \"{exp.Key}\" do not " +
+                                            $"match Type: \"{Expression.ReturnType}\".");
         }
     }
 }

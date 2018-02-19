@@ -10,18 +10,18 @@ namespace Delve.Models.Validation
     {
         private readonly IList<IValidationRule> _rules = new List<IValidationRule>();
 
-        public ValidationRules(IValidationRule rule)
+        public ValidationRules(IValidationRule rule, string key)
         {
-            AddRule(rule);
+            AddRule(rule, key);
         }
 
-        public void AddRule(IValidationRule rule)
+        public void AddRule(IValidationRule rule, string key)
         {
             var type = rule.ValidationType; 
             if (_rules.Select(x => x.ValidationType).Contains(type))
             {
-                throw new InvalidValidationBuilderException("Cannot assign two " +
-                "ValidationRules of same type (e.g. filter and filter) on same key.");
+                throw new InvalidValidationBuilderException($"Invalid rule definition of key: \"{key}\"." +
+                                                            $"Cannot define two equal ValidationRules on same key.");
             }
             
             _rules.Add(rule);
@@ -43,7 +43,7 @@ namespace Delve.Models.Validation
         {
             if (!_rules.Select(x => x.ValidationType).Contains(type))
             {
-                throw new InvalidQueryException($"{type} has not been registered under key: {key}");
+                throw new InvalidQueryException($"Type: \"{type}\" has not been registered under key: \"{key}\"");
             }
         }
     }
