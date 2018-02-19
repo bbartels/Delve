@@ -22,7 +22,7 @@ namespace Delve.Models.Validation
 
             if (!Regex.IsMatch(key, @"^[a-zA-Z0-9_.]+$"))
             {
-                throw new InvalidValidationBuilderException($"Key: \"{key}\" must only contain numbers, " +
+                throw new InvalidValidationBuilderException($"Key: '{key}' must only contain numbers, " +
                                                             $"letters, dots and underscores.");
             }
 
@@ -86,14 +86,14 @@ namespace Delve.Models.Validation
             {
                 if (!_validationRules.ContainsKey(key))
                 {
-                    throw new InvalidQueryException($"Invalid \"{type}\" " +
-                                                    $"propertykey: \"{key}\" in query.");
+                    throw new InvalidQueryException($"Invalid '{type}' " +
+                                                    $"propertykey: '{key}' in query.");
                 }
             }
 
             else
             {
-                if (GetExpandKey(key) == null) { throw new InvalidQueryException($"Key \"{key}\" is not defined."); }
+                if (GetExpandKey(key) == null) { throw new InvalidQueryException($"Key '{key}' is not defined."); }
             }
         }
 
@@ -143,7 +143,7 @@ namespace Delve.Models.Validation
                     if (!type.IsPrimitive && !_validNonPrimitive.Contains(type) && !typeof(IEnumerable).IsAssignableFrom(type))
                     {
                         throw new InvalidValidationBuilderException
-                            ($"Registered filter property: \"{key}\" can not be of type \"{type}\".");
+                            ($"Registered filter property: '{key}' can not be of type '{type}'.");
                     }
                 } break;
 
@@ -152,7 +152,7 @@ namespace Delve.Models.Validation
                     if (type.IsValueType)
                     {
                         throw new InvalidValidationBuilderException
-                            ($"Registered property: \"{key}\" can not be of type: \"{type}\". Expand is limited to classes.");
+                            ($"Registered property: '{key}' can not be of type: '{type}'. Expand is limited to classes.");
                     }
                 } break;
 

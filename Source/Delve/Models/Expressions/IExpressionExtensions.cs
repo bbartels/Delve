@@ -69,8 +69,8 @@ namespace Delve.Models.Expressions
             }
             catch (NotSupportedException)
             {
-                throw new InvalidQueryException($"Value: {currentValue}: does not match " +
-                                    $"datatype: {exp.PropertyType} of registered key: {key}");
+                throw new InvalidQueryException($"Value: '{currentValue}' does not match " +
+                                    $"datatype: '{exp.PropertyType}' of registered key: '{key}'");
             }
         }
     }

@@ -24,7 +24,7 @@ namespace Delve.Models
 
             catch (ArgumentNullException)
             {
-                throw new InvalidQueryException($"Could not select requested property: {_key}." +
+                throw new InvalidQueryException($"Could not select requested property: '{_key}'." +
                                                 "Likely cause by missing Expand.");
             }
         }

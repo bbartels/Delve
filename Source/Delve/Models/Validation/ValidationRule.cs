@@ -26,8 +26,8 @@ namespace Delve.Models.Validation
         {
             if (exp.PropertyType == Expression.ReturnType) { return this; }
 
-            throw new InvalidQueryException($"Values of key: \"{exp.Key}\" do not " +
-                                            $"match Type: \"{Expression.ReturnType}\".");
+            throw new InvalidQueryException($"Values of key: '{exp.Key}' do not " +
+                                            $"match Type: '{Expression.ReturnType}'.");
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Delve.Models.Expressions
             var func = funcs[(int)op];
             if (!func.type.IsAssignableFrom(type))
             {
-                throw new InvalidQueryException($"Cannot use operator: {op} with type: {type}");
+                throw new InvalidQueryException($"Cannot use operator: '{op}' with type: '{type}'");
             }
 
             return funcs[(int)op].func;

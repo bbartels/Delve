@@ -20,7 +20,7 @@ namespace Delve.Models.Validation
             var type = rule.ValidationType; 
             if (_rules.Select(x => x.ValidationType).Contains(type))
             {
-                throw new InvalidValidationBuilderException($"Invalid rule definition of key: \"{key}\"." +
+                throw new InvalidValidationBuilderException($"Invalid rule definition of key: '{key}'." +
                                                             $"Cannot define two equal ValidationRules on same key.");
             }
             
@@ -43,7 +43,7 @@ namespace Delve.Models.Validation
         {
             if (!_rules.Select(x => x.ValidationType).Contains(type))
             {
-                throw new InvalidQueryException($"Type: \"{type}\" has not been registered under key: \"{key}\"");
+                throw new InvalidQueryException($"Type: '{type}' has not been registered under key: '{key}'");
             }
         }
     }

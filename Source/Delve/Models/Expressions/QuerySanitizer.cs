@@ -84,30 +84,37 @@ namespace Delve.Models.Expressions
                     return op.Value;
                 }
             }
-            throw new InvalidQueryException($"\"{query}\" does not contain a valid {nameof(QueryOperator)}.");
+            throw new InvalidQueryException($"'{query}' does not contain a valid {nameof(QueryOperator)}.");
         }
 
         private static (string o1, string o2) GetOperands(string str)
         {
+            bool opFound = false;
             var operands = (string.Empty, string.Empty);
 
             foreach (var op in _operatorMaps)
             {
                 int index = str.IndexOf(op.Key, StringComparison.Ordinal);
                 if (index == -1) { continue; }
+                opFound = true;
 
                 operands.Item1 = str.Substring(0, index);
                 operands.Item2 = str.Substring(index + op.Key.Length, str.Length - index - op.Key.Length);
             }
 
-            if (operands.Item1 == string.Empty || operands.Item2 == string.Empty)
+            if (!opFound)
             {
                 if (str.Count(c => c == '=') == 1)
                 {
                     throw new InvalidQueryException("Unknown filter operator '='. Did you mean '=='?");
                 }
 
-                throw new InvalidQueryException($"\"{str}\" does not contain a valid {nameof(QueryOperator)}.");
+                throw new InvalidQueryException($"'{str}' does not contain a valid {nameof(QueryOperator)}.");
+            }
+
+            if (operands.Item1 == string.Empty || operands.Item2 == string.Empty)
+            {
+                throw new InvalidQueryException($"Filter: '{str}' is missing an operand.");
             }
 
             return operands;

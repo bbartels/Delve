@@ -20,7 +20,7 @@ namespace Delve.Models.Expressions
 
             catch (ArgumentNullException)
             {
-                throw new InvalidQueryException($"Could not select requested property: {Key}." +
+                throw new InvalidQueryException($"Could not select requested property: '{Key}'." +
                                                 "Likely cause by missing Expand.");
             }
         }
