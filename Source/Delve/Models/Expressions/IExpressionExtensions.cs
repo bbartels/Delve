@@ -53,14 +53,26 @@ namespace Delve.Models.Expressions
             return (IExpression)Activator.CreateInstance(type, query);
         }
 
+        public static bool IsOrImplementsGenericIEnumerableExceptIsString(this Type type)
+        {
+            if (type == typeof(string)) { return false; }
+
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>) || 
+                   type.GetInterfaces().Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
+
         public static void ValidatePropertyType(this IExpression exp, string key, IEnumerable<string> values)
         {
             if (exp.PropertyType == typeof(string)) { return; }
 
+            var type = exp.PropertyType.IsOrImplementsGenericIEnumerableExceptIsString()
+                        ? exp.PropertyType.GenericTypeArguments.FirstOrDefault() 
+                        : exp.PropertyType;
+
             var currentValue = string.Empty;
             try
             {
-                var converter = TypeDescriptor.GetConverter(exp.PropertyType);
+                var converter = TypeDescriptor.GetConverter(type);
                 foreach (var value in values)
                 {
                     currentValue = value;

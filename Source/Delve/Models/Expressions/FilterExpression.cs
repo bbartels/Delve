@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Delve.Models.Validation;
@@ -18,8 +21,8 @@ namespace Delve.Models.Expressions
             }
         }
 
-        public Func<TResult, TResult, bool> OperationExpression { get; private set; }
-        public TResult[] Values { get; }
+        public Func<object, object, bool> OperationExpression { get; private set; }
+        public IEnumerable<object> Values { get; }
 
 
         public FilterExpression(string filter)
@@ -27,17 +30,34 @@ namespace Delve.Models.Expressions
             Operator = QuerySanitizer.GetFilterOperator(filter);
             Key = QuerySanitizer.GetKey(ValidationType.Filter, filter);
             StringValues = QuerySanitizer.GetFilterValues(filter);
+
+            var type = typeof(TResult).IsOrImplementsGenericIEnumerableExceptIsString()
+                    ? typeof(TResult).GenericTypeArguments.FirstOrDefault()
+                    : typeof(TResult);
+
             this.ValidatePropertyType(Key, StringValues);
 
-            Values = StringValues.Select(x => (TResult)Convert.ChangeType(x, typeof(TResult))).ToArray();
-            OperationExpression = ExpressionFactory<TResult>.RequestFunc(Operator, typeof(TResult));
+            Values = StringValues.Select(x => Convert.ChangeType(x, type)).ToArray();
+            OperationExpression = ExpressionFactory.RequestFunc(Operator, typeof(TResult));
         }
 
         public override IQueryable<T> ApplyFilter(IQueryable<T> source)
         {
             var compiledProp = Property.Compile();
+            
+            return source.Where(x => test1(x, compiledProp));
+        }
 
-            return source.Where(x => Values.Any(v =>  OperationExpression(v, compiledProp(x))));
+        private bool test1(T test, Func<T, TResult> test2)
+        {
+            var any = false;
+            foreach (var val in Values)
+            {
+                OperationExpression(1, new List<int> { 1, 2 });
+                any = any || OperationExpression(val, test2(test));
+            }
+
+            return any;
         }
     }
 }

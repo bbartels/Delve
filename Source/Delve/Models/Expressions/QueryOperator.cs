@@ -15,6 +15,7 @@
         StartsWith,
         StartsWithInsensitive,
         EndsWith,
-        EndsWithInsensitive
+        EndsWithInsensitive,
+        EnumerableContains
     }
 }

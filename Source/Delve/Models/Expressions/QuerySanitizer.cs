@@ -23,7 +23,8 @@ namespace Delve.Models.Expressions
             { "^", QueryOperator.StartsWith },
             { "^*", QueryOperator.StartsWithInsensitive },
             { "$", QueryOperator.EndsWith },
-            { "$*", QueryOperator.EndsWithInsensitive }
+            { "$*", QueryOperator.EndsWithInsensitive },
+            { "?[]", QueryOperator.EnumerableContains }
         };
 
         public static string GetKey(ValidationType type, string query)

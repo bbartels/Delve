@@ -52,6 +52,7 @@ namespace Delve.Demo.Models
             CanFilter("Id", x => x.Id);
 
             CanSelect("RoleId", x => x.UserRoles.Select(ur => ur.RoleId));
+            CanFilter("RoleId", x => x.UserRoles.Select(ur => ur.RoleId));
 
             //Allows clients to expand on UserRoles (EF Core Include)
             //WARNING: Can lead to bad performance if used incorrectly.

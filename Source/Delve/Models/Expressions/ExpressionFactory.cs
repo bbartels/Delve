@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Delve.Models.Expressions
 {
-    internal static class ExpressionFactory<TResult>
+    internal static class ExpressionFactory
     {
-        private static readonly (Type type, Func<TResult, TResult, bool> func)[] funcs =
+        private static readonly (Type type, Func<object, object, bool> func)[] funcs =
         {
             (typeof(object), (x, y) => x.Equals(y)),
             (typeof(string), (x, y) => ((string)(object)x).Equals((string)(object)y, StringComparison.OrdinalIgnoreCase)),
@@ -19,11 +22,17 @@ namespace Delve.Models.Expressions
             (typeof(string), (x, y) => ((string)(object)y).StartsWith((string)(object)x, StringComparison.Ordinal)),
             (typeof(string), (x, y) => ((string)(object)y).StartsWith((string)(object)x, StringComparison.OrdinalIgnoreCase)),
             (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.Ordinal)),
-            (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.OrdinalIgnoreCase))
-            //(typeof(IEnumerable<TResult>), (x, y) => ((IEnumerable<TResult>)y).Contains(x))
+            (typeof(string), (x, y) => ((string)(object)y).EndsWith((string)(object)x, StringComparison.OrdinalIgnoreCase)),
+            (typeof(IEnumerable), test)
         };
 
-        public static Func<TResult, TResult, bool> RequestFunc(QueryOperator op, Type type)
+        private static bool test(object x, object y)
+        {
+            return ((IEnumerable)y).Cast<object>().Contains(x);
+        }
+
+
+        public static Func<object, object, bool> RequestFunc(QueryOperator op, Type type)
         {
             var func = funcs[(int)op];
             if (!func.type.IsAssignableFrom(type))
