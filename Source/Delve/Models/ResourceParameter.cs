@@ -26,7 +26,7 @@ namespace Delve.Models
             get { return _pageSize; }
             set 
             {
-                if (value > ResourceParameterOptions.MaxPageSize &&
+                if (value <= ResourceParameterOptions.MaxPageSize &&
                     value > 0)
                 {
                     _pageSize = value;
