@@ -64,8 +64,8 @@ namespace Delve.Models
 
         public IQueryable<T> ApplyDefaultSorts(IQueryable<T> source)
         {
-            if (source == null) { return null; }
-            
+            if (source == null || _defaultSorts.Count == 0) { return source; }
+
             var orderedSort = _defaultSorts[0].ApplySort(source);
 
             for (int i = 1; i < _defaultSorts.Count; i++)
