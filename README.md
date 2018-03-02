@@ -3,9 +3,9 @@
 Delve is a simple framework for ASP.NET Core that adds easy pagination, filtering, sorting, selecting and expanding to an MVC project without being tightly coupled to an ORM.  
 
 Core:  
-[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.3-alpha)  
+[![Delve](https://img.shields.io/nuget/vpre/Delve.svg)](https://www.nuget.org/packages/Delve/0.9.5-alpha)  
 AspNetCore Integration:  
-[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.3-alpha)
+[![Delve.AspNetCore](https://img.shields.io/nuget/vpre/Delve.AspNetCore.svg)](https://www.nuget.org/packages/Delve.AspNetCore/0.9.5-alpha)
 
 ## Features  
 * Pagination, Sorting, Filtering, Selecting and Expanding (i.e. EFCore Include) capabilities.
@@ -86,6 +86,11 @@ public class UserQueryValidator : AbstractQueryValidator<User>
         CanExpand(x => x.UserRoles.Select(ur => ur.Role);
     }
 }
+```
+
+Now you just have to register the validator in your services:
+```csharp
+services.AddTransient<IQueryValidator<User>, UserQueryValidator>();
 ```
 
 ### 3. Configure your Controller
