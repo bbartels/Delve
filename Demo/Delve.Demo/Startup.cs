@@ -19,7 +19,11 @@ namespace Delve.Demo
         public void ConfigureServices(IServiceCollection services)
         {
             //Add Delve to this Mvc Project
-            services.AddMvc().AddDelve(options => options.IgnoreNullOnSerilazation = false);
+            services.AddMvc().AddDelve(options =>
+            {
+                options.IgnoreNullOnSerilazation = false;
+                options.OmitHostOnPaginationLinks = true;
+            }); 
 
             const string connection = @"Server=(localdb)\mssqllocaldb;Database=DelveDemo;Trusted_Connection=True;";
             services.AddDbContext<UserManagerContext>(options => options.UseSqlServer(connection));

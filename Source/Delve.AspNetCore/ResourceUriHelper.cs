@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 using Delve.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Delve.AspNetCore
 {
@@ -29,14 +31,16 @@ namespace Delve.AspNetCore
                 { attributes[1], result.PageSize.ToString() }
             }.AddRange(parameters.GetPageHeader())) : null;
 
+            var omitHost = ResourceParameterOptions.OmitHostOnPaginationLinks;
+
             var metaData = new
             {
                 currentPage = result.PageNumber,
                 pageSize = result.PageSize,
                 totalPages = result.TotalPages,
                 totalCount = result.TotalCount,
-                previousPageLink = PercentEncodeReplace.Replace(prevPage),
-                nextPageLink = PercentEncodeReplace.Replace(nextPage)
+                previousPageLink = PercentEncodeReplace.Replace(omitHost ? OmitHost(prevPage, controller.HttpContext) : prevPage),
+                nextPageLink = PercentEncodeReplace.Replace(omitHost ? OmitHost(nextPage, controller.HttpContext) : nextPage)
             };
             
             controller.Response.Headers.Add("X-Pagination", Newtonsoft.Json.JsonConvert.SerializeObject(metaData));
@@ -45,6 +49,13 @@ namespace Delve.AspNetCore
         internal static string PascalToCamelCase(this string str)
         {
             return char.ToLower(str[0]) + str.Substring(1);
+        }
+
+        private static string OmitHost(string link, HttpContext context)
+        {
+            string host = context.Request.Host.Value;
+            int lengthHost = link.IndexOf(host, StringComparison.Ordinal) + host.Length;
+            return link.Substring(lengthHost, link.Length - lengthHost);
         }
 
         public static Dictionary<TKey, TValue> AddRange<TKey, TValue>(this Dictionary<TKey, TValue> d1, Dictionary<TKey, TValue> d2)

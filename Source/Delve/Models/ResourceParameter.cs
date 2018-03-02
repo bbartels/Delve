@@ -131,12 +131,14 @@ namespace Delve.Models
         public static int MaxPageSize { get; set; } = 25;
         public static int DefaultPageSize { get; set; } = 10;
         public static bool IgnoreNullOnSerialization { get; set; } = true;
+        public static bool OmitHostOnPaginationLinks { get; set; } = false;
 
         public static void ApplyConfig(DelveOptions options)
         {
             MaxPageSize = options.MaxPageSize;
             DefaultPageSize = options.DefaultPageSize;
             IgnoreNullOnSerialization = options.IgnoreNullOnSerilazation;
+            OmitHostOnPaginationLinks = options.OmitHostOnPaginationLinks;
         }
     }
 }

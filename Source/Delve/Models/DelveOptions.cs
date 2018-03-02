@@ -23,5 +23,7 @@
         }
 
         public bool IgnoreNullOnSerilazation { get; set; } = true;
+
+        public bool OmitHostOnPaginationLinks { get; set; } = false;
     }
 }
