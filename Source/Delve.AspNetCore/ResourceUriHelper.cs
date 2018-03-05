@@ -53,6 +53,7 @@ namespace Delve.AspNetCore
 
         private static string OmitHost(string link, HttpContext context)
         {
+            if (link == null) { return null; }
             string host = context.Request.Host.Value;
             int lengthHost = link.IndexOf(host, StringComparison.Ordinal) + host.Length;
             return link.Substring(lengthHost, link.Length - lengthHost);

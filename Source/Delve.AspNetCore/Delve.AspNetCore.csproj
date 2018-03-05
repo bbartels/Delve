@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Benjamin Bartels</Authors>
-    <Version>0.9.5-alpha</Version>
-    <AssemblyVersion>0.9.5.0</AssemblyVersion>
-    <FileVersion>0.9.5.0</FileVersion>
+    <Version>0.9.5.1-alpha</Version>
+    <AssemblyVersion>0.9.5.1</AssemblyVersion>
+    <FileVersion>0.9.5.1</FileVersion>
     <PackageTags>pagination sorting filtering .net .netcore core mvc</PackageTags>
     <Copyright>Copyright @2018 Benjamin Bartels</Copyright>
     <Description>Asp.NET Core MVC integration for the Delve library.</Description>
     <Company>Benjamin Bartels</Company>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <PackageReleaseNotes>Fixed Issue when having no default sort declared</PackageReleaseNotes>
+    <PackageReleaseNotes>Added option to omit hostname on x-pagination header links</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>http://github.com/bbartels/Delve</PackageProjectUrl>
   </PropertyGroup>
