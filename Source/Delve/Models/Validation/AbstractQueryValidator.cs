@@ -52,6 +52,11 @@ namespace Delve.Models.Validation
             _defaultConfig.AddDefaultSelect(key, exp);
         }
 
+        protected void AddDefaultExpand<TResult>(Expression<Func<T, TResult>> exp)
+        {
+            _defaultConfig.AddDefaultExpand(exp);
+        }
+
         protected void CanFilter<TResult>(string key, Expression<Func<T, TResult>> exp)
         {
             AddRule<TResult>(key, new ValidationRule<T, TResult>(exp, ValidationType.Filter));

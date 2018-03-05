@@ -33,6 +33,7 @@ namespace Delve.Demo.Models
             AddDefaultSelect("Name", u => u.LastName + " " + u.FirstName);
             //Adds virtual property as default sort
             AddDefaultSort(u => u.LastName + " " + u.LastName, true);
+            AddDefaultExpand(u => u.UserRoles);
 
             //Allows clients to select Id
             CanSelect("Id", x => x.Id);

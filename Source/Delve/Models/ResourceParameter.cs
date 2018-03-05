@@ -84,9 +84,14 @@ namespace Delve.Models
             return source;
         }
 
-        IQueryable<T> IInternalResourceParameter<T>.ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> Include)
+        IQueryable<T> IInternalResourceParameter<T>.ApplyExpand(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
         {
-            Expand.ForEach(e => source = e.ApplyExpand(source, Include));
+            if (Expand.Count == 0)
+            {
+                return _configuration.ApplyDefaultExpands(source, include);
+            }
+
+            Expand.ForEach(e => source = e.ApplyExpand(source, include));
             return source;
         }
 

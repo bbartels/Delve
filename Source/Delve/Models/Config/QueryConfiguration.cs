@@ -4,6 +4,8 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using Delve.Models.Validation;
+
 namespace Delve.Models
 {
     internal class QueryConfiguration<T> : IQueryConfiguration<T>
@@ -15,6 +17,7 @@ namespace Delve.Models
         private readonly IList<ISelectConfiguration<T>> _defaultSelects
                                             = new List<ISelectConfiguration<T>>();
 
+        private readonly IList<string> _defaultExpands = new List<string>();
 
         public void AddDefaultFilter(Expression<Func<T, bool>> exp)
         {
@@ -31,11 +34,21 @@ namespace Delve.Models
             _defaultSorts.Add(new SortConfiguration<T, TProperty>(exp, descending));
         }
 
+        public void AddDefaultExpand<TProperty>(Expression<Func<T, TProperty>> exp)
+        {
+            _defaultExpands.Add(ValidatorHelpers.GetExpandString(exp.ToString()));
+        }
+
         public IQueryable<T> ApplyDefaultFilters(IQueryable<T> source)
         {
             return source == null 
                 ? null 
                 : _defaultFilters.Aggregate(source, (current, filter) => current.Where(filter));
+        }
+
+        public IQueryable<T> ApplyDefaultExpands(IQueryable<T> source, Func<IQueryable<T>, string, IQueryable<T>> include)
+        {
+            return source == null ? null : _defaultExpands.Aggregate(source, include);
         }
 
         public IList<object> ApplyDefaultSelects(IEnumerable<T> source)
