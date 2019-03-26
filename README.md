@@ -193,7 +193,7 @@ GET /api/Users
 &select=        Id, Name, Age
 &expand=        UserRoles
 &pageNumber=    1
-&pageSize=      10
+&pageSize=      5
 ```
 
 ##### X-Pagination Response Header:  
